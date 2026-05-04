@@ -1,579 +1,2008 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Japa Session Tool</title>
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#1a0a2e">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<style>
-  /* ── Reset & Base ──────────────────────────────────── */
-  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-  html, body {
-    width: 100%; height: 100%;
-    overflow: hidden;
-    font-family: 'Georgia', 'Times New Roman', serif;
-    background: #000;
-    color: #fff;
-    cursor: default;
-    user-select: none;
-  }
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no"
+    />
+    <meta name="theme-color" content="#06040f" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <meta name="apple-mobile-web-app-title" content="Japa Session" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <title>Japa Session Tool</title>
+    <link rel="manifest" href="manifest.json" />
 
-  /* ── Slideshow ─────────────────────────────────────── */
-  #slideshow {
-    position: fixed; inset: 0;
-    z-index: 0;
-  }
-  .slide {
-    position: absolute; inset: 0;
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-color: transparent;
-    opacity: 0;
-    transition: opacity 1.8s ease-in-out;
-  }
-  .slide.active { opacity: 1; }
+    <!-- Fonts – Cinzel for sacred display, Raleway for clean UI -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Raleway:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
 
-  /* Dim overlay for readability */
-  #slideshow::after {
-    content: '';
-    position: absolute; inset: 0;
-    background: rgba(0, 0, 0, 0.2);
-    pointer-events: none;
-  }
+    <style>
+      /* ═══════════════════════════════════════════════════════════
+   DESIGN TOKENS
+═══════════════════════════════════════════════════════════ */
+      :root {
+        /* Palette */
+        --bg-void: #04030a;
+        --bg-deep: #07051a;
+        --bg-surface: rgba(9, 7, 28, 0.88);
+        --gold-vivid: #f5c518;
+        --gold-primary: #c9901a;
+        --gold-muted: #8a6212;
+        --gold-dim: rgba(201, 144, 26, 0.18);
+        --text-primary: #f0e8d5;
+        --text-secondary: rgba(240, 232, 213, 0.6);
+        --text-dim: rgba(240, 232, 213, 0.3);
+        --glass-bg: rgba(4, 3, 12, 0.75);
+        --glass-border: rgba(201, 144, 26, 0.25);
+        --danger: #d94f4f;
+        --warning-color: #d97a30;
+        --success: #4caf73;
 
-  /* Mantra background for empty areas around contained images */
-  #mantra-bg {
-    position: fixed; inset: 0;
-    z-index: -1;
-    background: linear-gradient(135deg, #1a0a2e 0%, #0d1b3e 50%, #1a0a2e 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-  }
-  #mantra-bg .mantra-watermark {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    flex-wrap: wrap;
-    align-content: center;
-    justify-content: center;
-    gap: 18px 40px;
-    padding: 20px;
-    opacity: 0.10;
-    pointer-events: none;
-  }
-  #mantra-bg .mantra-watermark span {
-    font-size: clamp(1rem, 2.5vw, 1.6rem);
-    font-weight: bold;
-    color: #ffd700;
-    letter-spacing: 0.08em;
-    white-space: nowrap;
-  }
+        /* Typography */
+        --font-sacred: "Cinzel", "Palatino Linotype", "Book Antiqua", Georgia,
+          serif;
+        --font-ui: "Raleway", "Trebuchet MS", Tahoma, sans-serif;
+        --font-mono: "Courier New", Courier, monospace;
 
-  /* ── Mantra Overlay ────────────────────────────────── */
-  #mantra {
-    position: fixed;
-    top: 16%;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 10;
-    text-align: center;
-    line-height: 1.55;
-    font-size: clamp(1.4rem, 3.5vw, 2.8rem);
-    font-weight: bold;
-    color: #fff;
-    text-shadow:
-      0 0 20px rgba(0,0,0,0.9),
-      0 0 40px rgba(0,0,0,0.7),
-      2px 2px 4px rgba(0,0,0,0.95);
-    letter-spacing: 0.04em;
-    pointer-events: none;
-    white-space: nowrap;
-  }
+        /* Layout */
+        --safe-top: env(safe-area-inset-top, 0px);
+        --safe-bottom: env(safe-area-inset-bottom, 0px);
+        --safe-left: env(safe-area-inset-left, 0px);
+        --safe-right: env(safe-area-inset-right, 0px);
 
-  /* ── Timer Display ─────────────────────────────────── */
-  #timer-display {
-    position: fixed;
-    top: 4%;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 10;
-    font-size: clamp(3rem, 8vw, 7rem);
-    font-family: 'Courier New', monospace;
-    font-weight: bold;
-    color: #fff;
-    text-shadow:
-      0 0 30px rgba(255, 200, 50, 0.5),
-      0 0 60px rgba(255, 150, 0, 0.3),
-      2px 2px 6px rgba(0,0,0,0.9);
-    pointer-events: none;
-    transition: color 0.3s;
-  }
-  #timer-display.warning { color: #ff6b6b; }
-  #timer-display.done {
-    color: #ff4444;
-    animation: pulse 0.8s ease-in-out infinite;
-  }
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
-  }
+        /* Timer ring */
+        --ring-size: clamp(180px, 44vmin, 300px);
 
-  /* ── Controls Bar ──────────────────────────────────── */
-  #controls {
-    position: fixed;
-    bottom: 0; left: 0; right: 0;
-    z-index: 100;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    padding: 12px 16px;
-    background: linear-gradient(transparent, rgba(0,0,0,0.85));
-    transition: opacity 0.4s, transform 0.4s;
-  }
-  #controls.hidden {
-    opacity: 0;
-    transform: translateY(100%);
-    pointer-events: none;
-  }
+        /* Transitions */
+        --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+      }
 
-  .btn {
-    padding: 10px 20px;
-    border: 1px solid rgba(255,255,255,0.3);
-    border-radius: 8px;
-    background: rgba(255,255,255,0.1);
-    color: #fff;
-    font-size: clamp(0.8rem, 1.5vw, 1rem);
-    font-family: 'Segoe UI', sans-serif;
-    cursor: pointer;
-    backdrop-filter: blur(10px);
-    transition: all 0.2s;
-    white-space: nowrap;
-  }
-  .btn:hover {
-    background: rgba(255,255,255,0.25);
-    border-color: rgba(255,255,255,0.6);
-  }
-  .btn:active {
-    transform: scale(0.95);
-  }
-  .btn.primary {
-    background: rgba(76, 175, 80, 0.4);
-    border-color: rgba(76, 175, 80, 0.6);
-  }
-  .btn.primary:hover {
-    background: rgba(76, 175, 80, 0.6);
-  }
-  .btn.warning {
-    background: rgba(255, 152, 0, 0.4);
-    border-color: rgba(255, 152, 0, 0.6);
-  }
-  .btn.warning:hover {
-    background: rgba(255, 152, 0, 0.6);
-  }
-  .btn.accent {
-    background: rgba(33, 150, 243, 0.4);
-    border-color: rgba(33, 150, 243, 0.6);
-  }
-  .btn.accent:hover {
-    background: rgba(33, 150, 243, 0.6);
-  }
+      /* ═══════════════════════════════════════════════════════════
+   RESET
+═══════════════════════════════════════════════════════════ */
+      *,
+      *::before,
+      *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-  /* Toggle button for showing/hiding controls */
-  #toggle-controls {
-    position: fixed;
-    bottom: 10px; right: 10px;
-    z-index: 200;
-    width: 40px; height: 40px;
-    border-radius: 50%;
-    border: 1px solid rgba(255,255,255,0.2);
-    background: rgba(0,0,0,0.4);
-    color: #fff;
-    font-size: 18px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    backdrop-filter: blur(5px);
-    transition: all 0.2s;
-  }
-  #toggle-controls:hover {
-    background: rgba(255,255,255,0.15);
-  }
+      html {
+        height: 100%;
+        -webkit-text-size-adjust: 100%;
+        text-size-adjust: 100%;
+      }
 
-  /* ── No-images fallback ────────────────────────────── */
-  #no-images {
-    position: fixed; inset: 0;
-    z-index: 5;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, #1a0a2e 0%, #0d1b3e 50%, #1a0a2e 100%);
-    flex-direction: column;
-    gap: 20px;
-  }
-  #no-images.show { display: flex; }
-  #no-images p {
-    font-size: 1.2rem;
-    color: rgba(255,255,255,0.6);
-    text-align: center;
-    max-width: 500px;
-    line-height: 1.6;
-  }
-</style>
-</head>
-<body>
+      body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        font-family: var(--font-ui);
+        background: var(--bg-void);
+        color: var(--text-primary);
+        overscroll-behavior: none;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+        user-select: none;
+        -webkit-user-select: none;
+      }
 
-<div id="mantra-bg">
-  <div class="mantra-watermark" id="watermark"></div>
-</div>
-<div id="slideshow"></div>
+      button {
+        font-family: var(--font-ui);
+        cursor: pointer;
+        border: none;
+        outline: none;
+        background: none;
+        color: inherit;
+        -webkit-tap-highlight-color: transparent;
+      }
 
-<div id="no-images">
-  <p>No images found in <strong>NRJD_Pics</strong> folder.<br>
-  Add .jpg / .jpeg / .png images and reload.</p>
-</div>
+      input {
+        font-family: var(--font-ui);
+      }
 
-<div id="timer-display">3:00</div>
+      /* Remove number input spinners */
+      input[type="number"]::-webkit-inner-spin-button,
+      input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+      }
+      input[type="number"] {
+        -moz-appearance: textfield;
+        appearance: textfield;
+      }
 
-<div id="mantra">
-  HARE KRISHNA HARE KRISHNA<br>
-  KRISHNA KRISHNA HARE HARE<br>
-  HARE RAMA HARE RAMA<br>
-  RAMA RAMA HARE HARE
-</div>
+      /* ═══════════════════════════════════════════════════════════
+   BACKGROUND LAYERS
+═══════════════════════════════════════════════════════════ */
+      #bg-ambient {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        background: radial-gradient(
+            ellipse 80% 60% at 20% 15%,
+            rgba(80, 40, 160, 0.14) 0%,
+            transparent 55%
+          ),
+          radial-gradient(
+            ellipse 60% 50% at 80% 80%,
+            rgba(160, 90, 10, 0.1) 0%,
+            transparent 55%
+          ),
+          radial-gradient(
+            ellipse 100% 70% at 50% 50%,
+            rgba(20, 10, 60, 0.5) 0%,
+            transparent 80%
+          ),
+          linear-gradient(175deg, #07051a 0%, #04030c 50%, #060412 100%);
+        pointer-events: none;
+      }
 
-<div id="controls">
-  <button class="btn primary" id="btn-start">▶ Start</button>
-  <button class="btn" id="btn-pause" disabled>⏸ Pause</button>
-  <button class="btn warning" id="btn-reset">↺ Reset (3:00)</button>
-  <button class="btn accent" id="btn-next">⏭ Next (🔔 + Reset)</button>
-  <button class="btn" id="btn-fullscreen">⛶ Fullscreen</button>
-</div>
+      /* Dot-grid sacred geometry overlay */
+      #bg-ambient::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: radial-gradient(
+          circle 1px at 1px 1px,
+          rgba(201, 144, 26, 0.12) 0%,
+          transparent 0%
+        );
+        background-size: 36px 36px;
+        pointer-events: none;
+      }
 
-<button id="toggle-controls" title="Toggle Controls">☰</button>
+      /* Mantra watermark (tiled, very faint) */
+      #watermark {
+        position: fixed;
+        inset: 0;
+        z-index: 1;
+        display: flex;
+        flex-wrap: wrap;
+        align-content: center;
+        justify-content: center;
+        gap: clamp(10px, 2.5vw, 20px) clamp(20px, 5vw, 52px);
+        padding: 16px;
+        opacity: 0.055;
+        pointer-events: none;
+        overflow: hidden;
+      }
+      #watermark span {
+        font-family: var(--font-sacred);
+        font-size: clamp(0.55rem, 1.4vw, 1rem);
+        font-weight: 600;
+        color: var(--gold-vivid);
+        letter-spacing: 0.1em;
+        white-space: nowrap;
+      }
 
-<script>
-// ══════════════════════════════════════════════════════
-//  TEMPLE BELL – from Temple_Bell_Sound.mp3 (1.5s clip × 3)
-// ══════════════════════════════════════════════════════
-const AudioCtx = window.AudioContext || window.webkitAudioContext;
-let audioCtx = null;
-let bellBuffer = null; // decoded full audio buffer
-let bellClip = null;   // trimmed 1.5s buffer
+      /* ═══════════════════════════════════════════════════════════
+   SLIDESHOW
+═══════════════════════════════════════════════════════════ */
+      #slideshow {
+        position: fixed;
+        inset: 0;
+        z-index: 2;
+        pointer-events: none;
+      }
 
-function ensureAudioCtx() {
-  if (!audioCtx) audioCtx = new AudioCtx();
-  if (audioCtx.state === 'suspended') audioCtx.resume();
-  return audioCtx;
-}
+      .slide {
+        position: absolute;
+        inset: 0;
+        background-size: contain;
+        background-position: center;
+        background-repeat: no-repeat;
+        opacity: 0;
+        transition: opacity 2.2s ease-in-out;
+        will-change: opacity;
+      }
+      .slide.active {
+        opacity: 1;
+      }
 
-// Preload and decode the bell MP3, extract first 1.5s
-async function loadBellSound() {
-  try {
-    const ctx = ensureAudioCtx();
-    const resp = await fetch('/Temple_Bell_Sound.mp3');
-    const arrayBuf = await resp.arrayBuffer();
-    bellBuffer = await ctx.decodeAudioData(arrayBuf);
+      /* Deep vignette over slideshow */
+      #slideshow::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          ellipse at 50% 50%,
+          rgba(0, 0, 0, 0.05) 0%,
+          rgba(0, 0, 0, 0.45) 65%,
+          rgba(0, 0, 0, 0.8) 100%
+        );
+        pointer-events: none;
+      }
 
-    // Extract first 1.5 seconds into a separate buffer
-    const clipDuration = 1.5;
-    const clipSamples = Math.min(
-      Math.floor(clipDuration * bellBuffer.sampleRate),
-      bellBuffer.length
-    );
-    bellClip = ctx.createBuffer(
-      bellBuffer.numberOfChannels,
-      clipSamples,
-      bellBuffer.sampleRate
-    );
-    for (let ch = 0; ch < bellBuffer.numberOfChannels; ch++) {
-      const src = bellBuffer.getChannelData(ch);
-      const dst = bellClip.getChannelData(ch);
-      for (let i = 0; i < clipSamples; i++) dst[i] = src[i];
-    }
-  } catch (e) {
-    console.warn('Could not load bell sound:', e);
-  }
-}
+      /* No-images fallback message */
+      #no-images {
+        position: fixed;
+        inset: 0;
+        z-index: 3;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none;
+      }
+      #no-images.show {
+        display: flex;
+      }
+      #no-images p {
+        font-size: clamp(0.8rem, 2vw, 0.95rem);
+        color: var(--text-dim);
+        text-align: center;
+        max-width: 360px;
+        line-height: 1.75;
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 16px;
+        padding: clamp(16px, 4vw, 28px) clamp(20px, 5vw, 36px);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+      }
 
-// Play the 1.5s bell clip at a scheduled time
-function strikeBell(ctx, startTime) {
-  if (!bellClip) return;
-  const source = ctx.createBufferSource();
-  source.buffer = bellClip;
-  source.connect(ctx.destination);
-  source.start(startTime);
-}
+      /* ═══════════════════════════════════════════════════════════
+   APP SHELL — GRID LAYOUT
+═══════════════════════════════════════════════════════════ */
+      #app {
+        position: fixed;
+        inset: 0;
+        z-index: 10;
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        grid-template-areas: "header" "main" "footer";
+        padding: calc(var(--safe-top) + clamp(8px, 2vw, 14px))
+          calc(var(--safe-right) + clamp(10px, 2.5vw, 18px))
+          calc(var(--safe-bottom) + clamp(8px, 2vw, 14px))
+          calc(var(--safe-left) + clamp(10px, 2.5vw, 18px));
+        pointer-events: none; /* children opt-in */
+      }
 
-// Play temple bell 3 times with spacing
-function playBell() {
-  const ctx = ensureAudioCtx();
-  const now = ctx.currentTime;
-  strikeBell(ctx, now);         // 1st ring
-  strikeBell(ctx, now + 1.5);   // 2nd ring
-  strikeBell(ctx, now + 3.0);   // 3rd ring
-}
+      /* ═══════════════════════════════════════════════════════════
+   HEADER — BRAND + ACTIONS
+═══════════════════════════════════════════════════════════ */
+      #header {
+        grid-area: header;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        pointer-events: auto;
+        animation: slide-down 0.7s var(--ease-out-expo) 0.1s both;
+      }
 
-// ══════════════════════════════════════════════════════
-//  SLIDESHOW
-// ══════════════════════════════════════════════════════
-const slideshowEl = document.getElementById('slideshow');
-const noImagesEl = document.getElementById('no-images');
-let images = [];
-let currentSlide = 0;
-let slideInterval = null;
+      @keyframes slide-down {
+        from {
+          opacity: 0;
+          transform: translateY(-16px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
 
-async function loadImages() {
-  try {
-    const resp = await fetch('/api/images');
-    if (resp.ok) {
-      images = await resp.json();
-    } else {
-      throw new Error('not ok');
-    }
-  } catch {
-    // Fallback: try loading from a static image list (for Android/offline)
-    try {
-      const resp = await fetch('image-list.json');
-      if (resp.ok) images = await resp.json();
-      else images = [];
-    } catch {
-      images = [];
-    }
-  }
+      /* Brand identity — change org name/logo here */
+      #brand {
+        display: flex;
+        align-items: center;
+        gap: clamp(8px, 2vw, 12px);
+      }
 
-  if (images.length === 0) {
-    noImagesEl.classList.add('show');
-    return;
-  }
+      #brand-emblem {
+        width: clamp(34px, 7vw, 46px);
+        height: clamp(34px, 7vw, 46px);
+        border-radius: 10px;
+        background: linear-gradient(
+          140deg,
+          var(--gold-primary) 0%,
+          var(--gold-vivid) 100%
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: var(--font-sacred);
+        font-size: clamp(1rem, 2.5vw, 1.45rem);
+        font-weight: 900;
+        color: var(--bg-void);
+        flex-shrink: 0;
+        box-shadow: 0 0 20px rgba(201, 144, 26, 0.38),
+          0 2px 8px rgba(0, 0, 0, 0.5);
+      }
 
-  // Create two slide elements for crossfade
-  const slideA = document.createElement('div');
-  slideA.className = 'slide active';
-  slideA.id = 'slide-a';
+      #brand-copy {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.15;
+      }
 
-  const slideB = document.createElement('div');
-  slideB.className = 'slide';
-  slideB.id = 'slide-b';
+      #brand-name {
+        font-family: var(--font-sacred);
+        font-size: clamp(0.6rem, 1.5vw, 0.88rem);
+        font-weight: 600;
+        color: var(--gold-vivid);
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        text-shadow: 0 0 14px rgba(245, 197, 24, 0.45);
+      }
 
-  slideshowEl.appendChild(slideA);
-  slideshowEl.appendChild(slideB);
+      #brand-sub {
+        font-size: clamp(0.48rem, 1.1vw, 0.65rem);
+        font-weight: 300;
+        color: var(--text-dim);
+        letter-spacing: 0.06em;
+      }
 
-  // Set first image
-  slideA.style.backgroundImage = `url("/NRJD_Pics/${encodeURIComponent(images[0])}")`;
+      /* Icon buttons (header actions) */
+      #header-actions {
+        display: flex;
+        gap: clamp(6px, 1.5vw, 10px);
+      }
 
-  // Preload all images
-  images.forEach(img => {
-    const i = new Image();
-    i.src = `/NRJD_Pics/${encodeURIComponent(img)}`;
-  });
+      .icon-btn {
+        width: clamp(36px, 8vw, 44px);
+        height: clamp(36px, 8vw, 44px);
+        border-radius: 10px;
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: clamp(0.9rem, 2.2vw, 1.15rem);
+        color: var(--text-secondary);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        transition: background 0.2s, border-color 0.2s, color 0.2s,
+          transform 0.1s;
+        pointer-events: auto;
+        cursor: pointer;
+      }
+      .icon-btn:hover {
+        background: rgba(201, 144, 26, 0.14);
+        border-color: var(--gold-muted);
+        color: var(--gold-vivid);
+      }
+      .icon-btn:active {
+        transform: scale(0.9);
+      }
 
-  // Start rotation
-  currentSlide = 0;
-  slideInterval = setInterval(nextSlide, 10000);
-}
+      /* ═══════════════════════════════════════════════════════════
+   MAIN CONTENT AREA
+═══════════════════════════════════════════════════════════ */
+      #main {
+        grid-area: main;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: clamp(20px, 5vmin, 44px);
+        padding: clamp(8px, 2vw, 16px);
+        pointer-events: none;
+        animation: fade-up 0.9s var(--ease-out-expo) 0.25s both;
+      }
 
-function nextSlide() {
-  if (images.length <= 1) return;
+      @keyframes fade-up {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
 
-  currentSlide = (currentSlide + 1) % images.length;
-  const slideA = document.getElementById('slide-a');
-  const slideB = document.getElementById('slide-b');
+      /* ═══════════════════════════════════════════════════════════
+   TIMER — SVG PROGRESS RING
+═══════════════════════════════════════════════════════════ */
+      #timer-wrap {
+        position: relative;
+        width: var(--ring-size);
+        height: var(--ring-size);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
 
-  if (!slideA || !slideB) return;
+      #timer-svg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        transform: rotate(-90deg); /* start ring at top */
+        pointer-events: none;
+        overflow: visible;
+      }
 
-  // Determine which is currently active
-  if (slideA.classList.contains('active')) {
-    slideB.style.backgroundImage = `url("/NRJD_Pics/${encodeURIComponent(images[currentSlide])}")`;
-    slideA.classList.remove('active');
-    slideB.classList.add('active');
-  } else {
-    slideA.style.backgroundImage = `url("/NRJD_Pics/${encodeURIComponent(images[currentSlide])}")`;
-    slideB.classList.remove('active');
-    slideA.classList.add('active');
-  }
-}
+      #ring-track {
+        fill: none;
+        stroke: rgba(201, 144, 26, 0.1);
+        stroke-width: 5;
+      }
 
-// ══════════════════════════════════════════════════════
-//  TIMER
-// ══════════════════════════════════════════════════════
-const TIMER_DURATION = 180; // 3 minutes in seconds
-let timeLeft = TIMER_DURATION;
-let timerRunning = false;
-let timerInterval = null;
+      #ring-fill {
+        fill: none;
+        stroke: var(--gold-primary);
+        stroke-width: 5;
+        stroke-linecap: round;
+        /* r=44 → C = 2πr ≈ 276.46 */
+        stroke-dasharray: 276.46;
+        stroke-dashoffset: 0;
+        transition: stroke-dashoffset 1s linear, stroke 0.4s;
+        filter: drop-shadow(0 0 6px rgba(201, 144, 26, 0.65));
+      }
 
-const timerDisplay = document.getElementById('timer-display');
-const btnStart = document.getElementById('btn-start');
-const btnPause = document.getElementById('btn-pause');
-const btnReset = document.getElementById('btn-reset');
-const btnNext = document.getElementById('btn-next');
-const btnFullscreen = document.getElementById('btn-fullscreen');
-const toggleControls = document.getElementById('toggle-controls');
-const controls = document.getElementById('controls');
+      #ring-fill.state-warning {
+        stroke: var(--warning-color);
+        filter: drop-shadow(0 0 8px rgba(217, 122, 48, 0.75));
+      }
 
-function formatTime(seconds) {
-  const m = Math.floor(seconds / 60);
-  const s = seconds % 60;
-  return `${m}:${s.toString().padStart(2, '0')}`;
-}
+      #ring-fill.state-danger {
+        stroke: var(--danger);
+        filter: drop-shadow(0 0 10px rgba(217, 79, 79, 0.85));
+        animation: ring-throb 0.85s ease-in-out infinite;
+      }
 
-function updateTimerUI() {
-  timerDisplay.textContent = formatTime(timeLeft);
+      @keyframes ring-throb {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.35;
+        }
+      }
 
-  timerDisplay.classList.remove('warning', 'done');
-  if (timeLeft === 0) {
-    timerDisplay.classList.add('done');
-  } else if (timeLeft <= 15) {
-    timerDisplay.classList.add('warning');
-  }
-}
+      /* Outer decorative tick ring (purely visual) */
+      #ring-deco {
+        fill: none;
+        stroke: rgba(201, 144, 26, 0.06);
+        stroke-width: 1;
+        stroke-dasharray: 4 8;
+      }
 
-function startTimer() {
-  if (timerRunning) return;
-  if (timeLeft <= 0) return;
+      /* Center content */
+      #timer-center {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+        text-align: center;
+      }
 
-  // Ensure audio context is ready (needs user gesture)
-  ensureAudioCtx();
+      #timer-display {
+        font-family: var(--font-mono);
+        font-size: clamp(2.2rem, 8.5vmin, 5rem);
+        font-weight: bold;
+        color: var(--text-primary);
+        letter-spacing: -0.015em;
+        line-height: 1;
+        text-shadow: 0 0 32px rgba(201, 144, 26, 0.35),
+          0 2px 6px rgba(0, 0, 0, 0.9);
+        transition: color 0.35s;
+      }
 
-  timerRunning = true;
-  btnStart.disabled = true;
-  btnPause.disabled = false;
+      #timer-display.state-warning {
+        color: var(--warning-color);
+      }
+      #timer-display.state-danger {
+        color: var(--danger);
+        animation: text-pulse 0.85s ease-in-out infinite;
+      }
 
-  timerInterval = setInterval(() => {
-    timeLeft--;
-    updateTimerUI();
+      @keyframes text-pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.45;
+        }
+      }
 
-    if (timeLeft <= 0) {
-      timerRunning = false;
-      clearInterval(timerInterval);
-      timerInterval = null;
-      playBell();
-      // Auto-reset and restart after bell finishes (~5s for 3 rings × 1.5s)
-      setTimeout(() => {
-        timeLeft = TIMER_DURATION;
-        updateTimerUI();
-        startTimer();
-      }, 5500);
-    }
-  }, 1000);
-}
+      #timer-label {
+        font-family: var(--font-ui);
+        font-size: clamp(0.5rem, 1.4vmin, 0.7rem);
+        font-weight: 500;
+        color: var(--text-dim);
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        margin-top: 2px;
+      }
 
-function pauseTimer() {
-  if (!timerRunning) return;
-  timerRunning = false;
-  clearInterval(timerInterval);
-  timerInterval = null;
-  btnStart.disabled = false;
-  btnPause.disabled = true;
-}
+      #timer-duration-hint {
+        font-size: clamp(0.45rem, 1.2vmin, 0.62rem);
+        color: var(--text-dim);
+        letter-spacing: 0.08em;
+        opacity: 0.7;
+      }
 
-function resetTimer() {
-  pauseTimer();
-  timeLeft = TIMER_DURATION;
-  updateTimerUI();
-  btnStart.disabled = false;
-  btnPause.disabled = true;
-}
+      /* ═══════════════════════════════════════════════════════════
+   MANTRA CARD
+═══════════════════════════════════════════════════════════ */
+      #mantra-card {
+        position: relative;
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 20px;
+        padding: clamp(14px, 3.5vw, 30px) clamp(18px, 6vw, 60px);
+        text-align: center;
+        backdrop-filter: blur(22px);
+        -webkit-backdrop-filter: blur(22px);
+        box-shadow: inset 0 1px 0 rgba(201, 144, 26, 0.15),
+          inset 0 -1px 0 rgba(201, 144, 26, 0.08),
+          0 8px 40px rgba(0, 0, 0, 0.55), 0 0 80px rgba(201, 144, 26, 0.04);
+        max-width: min(92vw, 680px);
+        width: 100%;
+        overflow: hidden;
+      }
 
-function nextParticipant() {
-  playBell();
-  resetTimer();
-}
+      /* Top shimmer line */
+      #mantra-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 15%;
+        right: 15%;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(245, 197, 24, 0.6),
+          transparent
+        );
+      }
 
-// ══════════════════════════════════════════════════════
-//  FULLSCREEN
-// ══════════════════════════════════════════════════════
-function toggleFullscreen() {
-  if (!document.fullscreenElement) {
-    document.documentElement.requestFullscreen().catch(() => {});
-  } else {
-    document.exitFullscreen().catch(() => {});
-  }
-}
+      #mantra-text {
+        font-family: var(--font-sacred);
+        font-size: clamp(0.85rem, 2.8vw, 1.55rem);
+        font-weight: 600;
+        color: var(--text-primary);
+        line-height: 1.75;
+        letter-spacing: 0.07em;
+        text-shadow: 0 0 24px rgba(201, 144, 26, 0.15),
+          0 1px 4px rgba(0, 0, 0, 0.8);
+      }
 
-// ══════════════════════════════════════════════════════
-//  CONTROLS VISIBILITY
-// ══════════════════════════════════════════════════════
-let controlsVisible = true;
+      .m-line {
+        display: block;
+      }
 
-function toggleControlsVisibility() {
-  controlsVisible = !controlsVisible;
-  controls.classList.toggle('hidden', !controlsVisible);
-  toggleControls.textContent = controlsVisible ? '☰' : '▲';
-}
+      /* Highlight specific words */
+      .m-gold {
+        color: var(--gold-vivid);
+        text-shadow: 0 0 18px rgba(245, 197, 24, 0.45),
+          0 1px 3px rgba(0, 0, 0, 0.7);
+      }
 
-// ══════════════════════════════════════════════════════
-//  EVENT LISTENERS
-// ══════════════════════════════════════════════════════
-btnStart.addEventListener('click', startTimer);
-btnPause.addEventListener('click', pauseTimer);
-btnReset.addEventListener('click', resetTimer);
-btnNext.addEventListener('click', nextParticipant);
-btnFullscreen.addEventListener('click', toggleFullscreen);
-toggleControls.addEventListener('click', toggleControlsVisibility);
+      /* ═══════════════════════════════════════════════════════════
+   FOOTER / CONTROLS
+═══════════════════════════════════════════════════════════ */
+      #footer {
+        grid-area: footer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: clamp(6px, 1.5vw, 10px);
+        pointer-events: auto;
+        animation: slide-up 0.7s var(--ease-out-expo) 0.4s both;
+        transition: opacity 0.35s, transform 0.35s var(--ease-out-expo);
+      }
 
-// Keyboard shortcuts
-document.addEventListener('keydown', (e) => {
-  switch (e.key) {
-    case ' ':
-    case 'Enter':
-      e.preventDefault();
-      timerRunning ? pauseTimer() : startTimer();
-      break;
-    case 'r':
-    case 'R':
-      resetTimer();
-      break;
-    case 'n':
-    case 'N':
-      nextParticipant();
-      break;
-    case 'f':
-    case 'F':
-      toggleFullscreen();
-      break;
-    case 'h':
-    case 'H':
-      toggleControlsVisibility();
-      break;
-  }
-});
+      #footer.hidden {
+        opacity: 0;
+        transform: translateY(110%);
+        pointer-events: none;
+      }
 
-// ══════════════════════════════════════════════════════
-//  INIT
-// ══════════════════════════════════════════════════════
-updateTimerUI();
-loadImages();
-loadBellSound();
+      @keyframes slide-up {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
 
-// Fill mantra watermark background
-(function fillWatermark() {
-  const wm = document.getElementById('watermark');
-  const lines = [
-    'HARE KRISHNA HARE KRISHNA',
-    'KRISHNA KRISHNA HARE HARE',
-    'HARE RAMA HARE RAMA',
-    'RAMA RAMA HARE HARE',
-  ];
-  // Repeat enough to fill screen
-  for (let i = 0; i < 60; i++) {
-    const span = document.createElement('span');
-    span.textContent = lines[i % lines.length];
-    wm.appendChild(span);
-  }
-})();
+      /* Pill container */
+      .ctrl-pill {
+        display: flex;
+        align-items: center;
+        gap: 2px;
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 50px;
+        padding: 5px 6px;
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.45);
+      }
 
-// Register service worker for offline support
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js').catch(() => {});
-}
-</script>
-</body>
+      /* Generic control button */
+      .ctrl-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        padding: clamp(9px, 2.2vw, 12px) clamp(14px, 3.5vw, 22px);
+        border-radius: 50px;
+        font-family: var(--font-ui);
+        font-size: clamp(0.68rem, 1.7vw, 0.82rem);
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        color: var(--text-secondary);
+        background: transparent;
+        border: 1px solid transparent;
+        transition: background 0.2s, color 0.2s, border-color 0.2s,
+          transform 0.12s;
+        white-space: nowrap;
+        min-height: 44px; /* WCAG / Apple touch target */
+        cursor: pointer;
+      }
+
+      .ctrl-btn:hover {
+        background: rgba(255, 255, 255, 0.07);
+        color: var(--text-primary);
+      }
+      .ctrl-btn:active {
+        transform: scale(0.91);
+      }
+      .ctrl-btn:disabled {
+        opacity: 0.32;
+        cursor: not-allowed;
+        transform: none !important;
+      }
+
+      /* Play/Pause — main action, large gold circle */
+      #btn-play {
+        width: clamp(54px, 13vw, 70px);
+        height: clamp(54px, 13vw, 70px);
+        border-radius: 50%;
+        background: linear-gradient(
+          140deg,
+          var(--gold-primary) 0%,
+          var(--gold-vivid) 100%
+        );
+        color: var(--bg-void);
+        font-size: clamp(1.1rem, 3vw, 1.5rem);
+        border: none;
+        box-shadow: 0 0 28px rgba(201, 144, 26, 0.55),
+          0 4px 14px rgba(0, 0, 0, 0.45);
+        padding: 0;
+        flex-shrink: 0;
+        transition: box-shadow 0.2s, transform 0.12s;
+      }
+      #btn-play:hover {
+        box-shadow: 0 0 44px rgba(201, 144, 26, 0.75),
+          0 4px 20px rgba(0, 0, 0, 0.5);
+        transform: scale(1.06);
+      }
+      #btn-play:active {
+        transform: scale(0.91);
+      }
+      #btn-play:disabled {
+        opacity: 0.32;
+        transform: none;
+        box-shadow: none;
+      }
+
+      /* Next/bell — accented */
+      .ctrl-btn.accent {
+        color: var(--gold-vivid);
+      }
+      .ctrl-btn.accent:hover {
+        background: rgba(201, 144, 26, 0.12);
+        border-color: rgba(201, 144, 26, 0.25);
+      }
+
+      /* Show-controls FAB (when controls are hidden) */
+      #btn-show-controls {
+        display: none;
+        position: fixed;
+        bottom: calc(var(--safe-bottom) + 14px);
+        right: 14px;
+        z-index: 50;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        color: var(--text-secondary);
+        font-size: 1rem;
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        cursor: pointer;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        pointer-events: auto;
+        transition: background 0.2s, color 0.2s;
+      }
+      #btn-show-controls:hover {
+        background: rgba(201, 144, 26, 0.14);
+        color: var(--gold-vivid);
+      }
+      #btn-show-controls.visible {
+        display: flex;
+      }
+
+      /* ═══════════════════════════════════════════════════════════
+   SETTINGS PANEL — BOTTOM SHEET
+═══════════════════════════════════════════════════════════ */
+      #settings-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 300;
+        background: rgba(0, 0, 0, 0.62);
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s;
+      }
+      #settings-overlay.open {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      #settings-panel {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        max-height: 88vh;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        background: linear-gradient(175deg, #0d0b27 0%, #09071e 100%);
+        border: 1px solid var(--glass-border);
+        border-bottom: none;
+        border-radius: 22px 22px 0 0;
+        padding: 0 calc(var(--safe-right) + clamp(16px, 4vw, 28px))
+          calc(var(--safe-bottom) + clamp(16px, 4vw, 24px))
+          calc(var(--safe-left) + clamp(16px, 4vw, 28px));
+        transform: translateY(102%);
+        transition: transform 0.38s var(--ease-out-expo);
+        box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.7);
+      }
+      #settings-overlay.open #settings-panel {
+        transform: translateY(0);
+      }
+
+      /* Drag handle */
+      #settings-handle {
+        display: flex;
+        justify-content: center;
+        padding: 14px 0 10px;
+      }
+      #settings-handle span {
+        width: 38px;
+        height: 4px;
+        border-radius: 2px;
+        background: rgba(255, 255, 255, 0.18);
+      }
+
+      /* Settings header */
+      #settings-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-bottom: clamp(12px, 3vw, 20px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+        margin-bottom: clamp(14px, 3vw, 22px);
+      }
+
+      #settings-title {
+        font-family: var(--font-sacred);
+        font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+        font-weight: 600;
+        color: var(--gold-vivid);
+        letter-spacing: 0.06em;
+      }
+
+      #btn-settings-close {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.07);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        color: var(--text-secondary);
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      #btn-settings-close:hover {
+        background: rgba(255, 255, 255, 0.13);
+      }
+
+      /* Settings sections */
+      .s-section {
+        margin-bottom: clamp(18px, 4vw, 28px);
+      }
+
+      .s-label {
+        font-size: clamp(0.58rem, 1.4vw, 0.7rem);
+        font-weight: 600;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--gold-primary);
+        margin-bottom: clamp(10px, 2.5vw, 16px);
+      }
+
+      /* Preset chip grid */
+      .chip-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: clamp(6px, 1.5vw, 10px);
+      }
+
+      .chip {
+        padding: clamp(7px, 1.8vw, 10px) clamp(14px, 3.5vw, 20px);
+        border-radius: 50px;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        font-family: var(--font-ui);
+        font-size: clamp(0.72rem, 1.8vw, 0.84rem);
+        font-weight: 500;
+        color: var(--text-secondary);
+        cursor: pointer;
+        transition: all 0.2s;
+        min-height: 40px;
+      }
+      .chip:hover {
+        background: rgba(201, 144, 26, 0.12);
+        border-color: var(--gold-muted);
+        color: var(--gold-vivid);
+      }
+      .chip.active {
+        background: rgba(201, 144, 26, 0.22);
+        border-color: var(--gold-primary);
+        color: var(--gold-vivid);
+        box-shadow: 0 0 12px rgba(201, 144, 26, 0.22);
+      }
+
+      /* Custom time input row */
+      .custom-row {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: clamp(8px, 2vw, 14px);
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 14px;
+        padding: clamp(10px, 2.5vw, 16px) clamp(14px, 3.5vw, 22px);
+        margin-top: clamp(8px, 2vw, 14px);
+      }
+
+      .custom-row label {
+        font-size: clamp(0.72rem, 1.8vw, 0.82rem);
+        color: var(--text-secondary);
+        flex-shrink: 0;
+      }
+
+      .time-input-group {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .t-input {
+        width: clamp(46px, 11vw, 62px);
+        padding: 7px 6px;
+        background: rgba(255, 255, 255, 0.09);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 8px;
+        color: var(--text-primary);
+        font-family: var(--font-mono);
+        font-size: clamp(0.9rem, 2.2vw, 1.05rem);
+        text-align: center;
+        transition: border-color 0.2s, box-shadow 0.2s;
+      }
+      .t-input:focus {
+        outline: none;
+        border-color: var(--gold-primary);
+        box-shadow: 0 0 0 2px rgba(201, 144, 26, 0.22);
+      }
+
+      .t-sep {
+        font-family: var(--font-mono);
+        font-size: 1.1rem;
+        color: var(--text-dim);
+        font-weight: bold;
+      }
+
+      .apply-btn {
+        padding: 8px clamp(14px, 3vw, 20px);
+        background: linear-gradient(
+          135deg,
+          var(--gold-primary),
+          var(--gold-vivid)
+        );
+        border: none;
+        border-radius: 50px;
+        color: var(--bg-void);
+        font-family: var(--font-ui);
+        font-size: clamp(0.72rem, 1.8vw, 0.82rem);
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        cursor: pointer;
+        transition: box-shadow 0.2s, transform 0.12s;
+        white-space: nowrap;
+        min-height: 40px;
+      }
+      .apply-btn:hover {
+        box-shadow: 0 0 18px rgba(201, 144, 26, 0.45);
+      }
+      .apply-btn:active {
+        transform: scale(0.94);
+      }
+
+      /* Toggle rows */
+      .toggle-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: clamp(10px, 2.5vw, 14px) 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      }
+      .toggle-row:last-child {
+        border-bottom: none;
+      }
+
+      .toggle-text {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+      .toggle-name {
+        font-size: clamp(0.8rem, 2vw, 0.92rem);
+        font-weight: 500;
+        color: var(--text-primary);
+      }
+      .toggle-desc {
+        font-size: clamp(0.62rem, 1.5vw, 0.72rem);
+        color: var(--text-dim);
+      }
+
+      /* Custom toggle switch */
+      .sw {
+        position: relative;
+        width: 48px;
+        height: 26px;
+        flex-shrink: 0;
+      }
+      .sw input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+        position: absolute;
+      }
+      .sw-track {
+        position: absolute;
+        inset: 0;
+        border-radius: 13px;
+        background: rgba(255, 255, 255, 0.1);
+        cursor: pointer;
+        transition: background 0.3s;
+      }
+      .sw-track::before {
+        content: "";
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.5);
+        transition: transform 0.3s var(--ease-out-expo), background 0.3s;
+      }
+      .sw input:checked + .sw-track {
+        background: rgba(201, 144, 26, 0.42);
+      }
+      .sw input:checked + .sw-track::before {
+        transform: translateX(22px);
+        background: var(--gold-vivid);
+      }
+
+      /* ═══════════════════════════════════════════════════════════
+   FLOATING PARTICLES
+═══════════════════════════════════════════════════════════ */
+      .particle {
+        position: fixed;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          var(--gold-vivid) 0%,
+          transparent 70%
+        );
+        pointer-events: none;
+        z-index: 3;
+        animation: particle-rise var(--dur) ease-in var(--del) infinite;
+        opacity: 0;
+      }
+
+      @keyframes particle-rise {
+        0% {
+          transform: translateY(0) translateX(0) scale(1);
+          opacity: 0.7;
+        }
+        100% {
+          transform: translateY(-110vh) translateX(var(--drift)) scale(0.1);
+          opacity: 0;
+        }
+      }
+
+      /* ═══════════════════════════════════════════════════════════
+   BELL ANIMATION
+═══════════════════════════════════════════════════════════ */
+      @keyframes bell-swing {
+        0%,
+        100% {
+          transform: rotate(0);
+        }
+        15% {
+          transform: rotate(14deg);
+        }
+        35% {
+          transform: rotate(-11deg);
+        }
+        55% {
+          transform: rotate(8deg);
+        }
+        75% {
+          transform: rotate(-5deg);
+        }
+      }
+      .bell-ringing {
+        animation: bell-swing 0.55s ease-in-out 3;
+        display: inline-block;
+      }
+
+      /* ═══════════════════════════════════════════════════════════
+   RESPONSIVE — LANDSCAPE SMALL (phones sideways)
+═══════════════════════════════════════════════════════════ */
+      @media (orientation: landscape) and (max-height: 480px) {
+        :root {
+          --ring-size: clamp(110px, 26vh, 180px);
+        }
+
+        #main {
+          flex-direction: row;
+          gap: clamp(12px, 3vw, 24px);
+          padding: 4px clamp(8px, 2vw, 16px);
+        }
+
+        #mantra-card {
+          padding: 10px clamp(14px, 3vw, 24px);
+        }
+        #mantra-text {
+          font-size: clamp(0.72rem, 2vh, 0.95rem);
+          line-height: 1.65;
+        }
+        #brand-sub {
+          display: none;
+        }
+        #timer-label {
+          display: none;
+        }
+      }
+
+      /* ═══════════════════════════════════════════════════════════
+   RESPONSIVE — SMALL PHONES (< 375px)
+═══════════════════════════════════════════════════════════ */
+      @media (max-width: 374px) {
+        :root {
+          --ring-size: clamp(150px, 52vw, 200px);
+        }
+
+        #brand-sub {
+          display: none;
+        }
+        #mantra-card {
+          padding: 10px 14px;
+        }
+        #mantra-text {
+          font-size: 0.78rem;
+          line-height: 1.8;
+        }
+        #timer-display {
+          font-size: 2rem;
+        }
+        .ctrl-btn {
+          padding: 8px 10px;
+          font-size: 0.66rem;
+        }
+        #btn-play {
+          width: 50px;
+          height: 50px;
+          font-size: 1rem;
+        }
+      }
+
+      /* ═══════════════════════════════════════════════════════════
+   RESPONSIVE — LARGE PHONES / PHABLETS (≥ 430px)
+═══════════════════════════════════════════════════════════ */
+      @media (min-width: 430px) {
+        #mantra-text {
+          font-size: clamp(0.95rem, 3.2vw, 1.65rem);
+        }
+      }
+
+      /* ═══════════════════════════════════════════════════════════
+   RESPONSIVE — TABLET (≥ 768px)
+═══════════════════════════════════════════════════════════ */
+      @media (min-width: 768px) {
+        :root {
+          --ring-size: clamp(240px, 34vmin, 290px);
+        }
+
+        #mantra-text {
+          font-size: clamp(1.1rem, 2.4vw, 1.6rem);
+        }
+        #brand-name {
+          font-size: 0.9rem;
+        }
+        .ctrl-btn {
+          padding: 11px 22px;
+          font-size: 0.82rem;
+        }
+        #btn-play {
+          width: 64px;
+          height: 64px;
+        }
+      }
+
+      /* ═══════════════════════════════════════════════════════════
+   RESPONSIVE — DESKTOP (≥ 1024px)
+═══════════════════════════════════════════════════════════ */
+      @media (min-width: 1024px) {
+        :root {
+          --ring-size: clamp(260px, 28vmin, 310px);
+        }
+
+        #main {
+          gap: clamp(28px, 5vmin, 50px);
+        }
+        #mantra-text {
+          font-size: clamp(1.2rem, 1.9vw, 1.75rem);
+        }
+        #brand-name {
+          font-size: 0.95rem;
+        }
+      }
+
+      /* ═══════════════════════════════════════════════════════════
+   RESPONSIVE — LARGE DESKTOP (≥ 1440px)
+═══════════════════════════════════════════════════════════ */
+      @media (min-width: 1440px) {
+        :root {
+          --ring-size: 320px;
+        }
+
+        #mantra-text {
+          font-size: 1.8rem;
+        }
+        #mantra-card {
+          padding: 34px 72px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ───── Layer 0: Ambient BG ──────────────────── -->
+    <div id="bg-ambient" aria-hidden="true"></div>
+    <div id="watermark" aria-hidden="true"></div>
+
+    <!-- ───── Layer 1: Slideshow ──────────────────── -->
+    <div id="slideshow" aria-hidden="true"></div>
+    <div id="no-images" role="alert">
+      <p>
+        No images found in the <strong>NRJD_Pics</strong> folder.<br />
+        Add .jpg or .png images, then reload.
+      </p>
+    </div>
+
+    <!-- ───── Layer 2: App UI ─────────────────────── -->
+    <div id="app">
+      <!-- ── Header / Branding ────────────────────── -->
+      <header id="header">
+        <div id="brand">
+          <div id="brand-emblem" aria-hidden="true">ॐ</div>
+          <div id="brand-copy">
+            <!--
+          ★ CHANGE THESE TO YOUR ORGANISATION DETAILS ★
+          brand-name    : Short org name / group name
+          brand-sub     : App title or tagline
+        -->
+            <span id="brand-name">NRJD Satsang</span>
+            <span id="brand-sub">Japa Session Tool</span>
+          </div>
+        </div>
+        <div id="header-actions">
+          <button
+            class="icon-btn"
+            id="btn-fullscreen"
+            title="Fullscreen (F)"
+            aria-label="Toggle fullscreen"
+          >
+            ⛶
+          </button>
+          <button
+            class="icon-btn"
+            id="btn-open-settings"
+            title="Settings (S)"
+            aria-label="Open settings"
+          >
+            ⚙
+          </button>
+        </div>
+      </header>
+
+      <!-- ── Main Content ──────────────────────────── -->
+      <main id="main">
+        <!-- Timer Ring -->
+        <div
+          id="timer-wrap"
+          role="timer"
+          aria-live="polite"
+          aria-label="Japa timer"
+        >
+          <svg id="timer-svg" viewBox="0 0 100 100" aria-hidden="true">
+            <!-- Decorative outer tick ring -->
+            <circle
+              id="ring-deco"
+              cx="50"
+              cy="50"
+              r="48"
+              stroke-width="0.8"
+              fill="none"
+              stroke="rgba(201,144,26,0.06)"
+              stroke-dasharray="2 6"
+            />
+            <!-- Track -->
+            <circle id="ring-track" cx="50" cy="50" r="44" stroke-width="5" />
+            <!-- Progress fill -->
+            <circle
+              id="ring-fill"
+              cx="50"
+              cy="50"
+              r="44"
+              stroke-width="5"
+              stroke-dasharray="276.46"
+              stroke-dashoffset="0"
+            />
+          </svg>
+          <div id="timer-center">
+            <div id="timer-display">3:00</div>
+            <div id="timer-label">remaining</div>
+            <div id="timer-duration-hint"></div>
+          </div>
+        </div>
+
+        <!-- Mantra -->
+        <div id="mantra-card" aria-label="Hare Krishna Maha Mantra">
+          <p id="mantra-text" aria-live="off">
+            <span class="m-line">
+              <span class="m-gold">HARE</span> KRISHNA
+              <span class="m-gold">HARE</span> KRISHNA
+            </span>
+            <span class="m-line">
+              KRISHNA KRISHNA
+              <span class="m-gold">HARE</span>
+              <span class="m-gold">HARE</span>
+            </span>
+            <span class="m-line">
+              <span class="m-gold">HARE</span> RAMA
+              <span class="m-gold">HARE</span> RAMA
+            </span>
+            <span class="m-line">
+              RAMA RAMA
+              <span class="m-gold">HARE</span>
+              <span class="m-gold">HARE</span>
+            </span>
+          </p>
+        </div>
+      </main>
+
+      <!-- ── Footer / Controls ─────────────────────── -->
+      <footer id="footer" aria-label="Timer controls">
+        <div class="ctrl-pill">
+          <button class="ctrl-btn" id="btn-reset" aria-label="Reset timer (R)">
+            ↺ Reset
+          </button>
+          <button id="btn-play" aria-label="Start or pause timer (Space)">
+            ▶
+          </button>
+          <button
+            class="ctrl-btn accent"
+            id="btn-next"
+            aria-label="Next participant — bell and reset (N)"
+          >
+            🔔 Next
+          </button>
+        </div>
+        <button
+          class="icon-btn"
+          id="btn-hide-controls"
+          title="Hide controls (H)"
+          aria-label="Hide controls"
+          style="pointer-events: auto"
+        >
+          ▼
+        </button>
+      </footer>
+    </div>
+
+    <!-- ───── Show-controls FAB (visible when footer hidden) ── -->
+    <button id="btn-show-controls" aria-label="Show controls">▲</button>
+
+    <!-- ───── Settings Bottom Sheet ──────────────────────────── -->
+    <div
+      id="settings-overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Settings"
+    >
+      <div id="settings-panel">
+        <div id="settings-handle"><span></span></div>
+
+        <div id="settings-header">
+          <span id="settings-title">⚙ Session Settings</span>
+          <button id="btn-settings-close" aria-label="Close settings">✕</button>
+        </div>
+
+        <!-- Timer Duration -->
+        <div class="s-section">
+          <div class="s-label">Timer Duration</div>
+          <div class="chip-grid" id="duration-chips"></div>
+          <div class="custom-row">
+            <label for="c-min">Custom</label>
+            <div class="time-input-group">
+              <input
+                class="t-input"
+                type="number"
+                id="c-min"
+                min="0"
+                max="99"
+                value="3"
+                aria-label="Minutes"
+              />
+              <span class="t-sep">:</span>
+              <input
+                class="t-input"
+                type="number"
+                id="c-sec"
+                min="0"
+                max="59"
+                value="0"
+                aria-label="Seconds"
+              />
+            </div>
+            <button class="apply-btn" id="btn-apply-custom">Apply</button>
+          </div>
+        </div>
+
+        <!-- Slide Interval -->
+        <div class="s-section">
+          <div class="s-label">Slide Change Interval</div>
+          <div class="chip-grid" id="slide-chips"></div>
+        </div>
+
+        <!-- Options -->
+        <div class="s-section">
+          <div class="s-label">Options</div>
+          <div class="toggle-row">
+            <div class="toggle-text">
+              <span class="toggle-name">Auto-restart after bell</span>
+              <span class="toggle-desc"
+                >Timer auto-resets and continues after completion</span
+              >
+            </div>
+            <label class="sw" aria-label="Auto-restart">
+              <input type="checkbox" id="opt-auto-restart" checked />
+              <span class="sw-track"></span>
+            </label>
+          </div>
+          <div class="toggle-row">
+            <div class="toggle-text">
+              <span class="toggle-name">Temple bell sound</span>
+              <span class="toggle-desc"
+                >Play bell on timer completion and Next</span
+              >
+            </div>
+            <label class="sw" aria-label="Bell sound">
+              <input type="checkbox" id="opt-bell" checked />
+              <span class="sw-track"></span>
+            </label>
+          </div>
+          <div class="toggle-row">
+            <div class="toggle-text">
+              <span class="toggle-name">Warning indicator</span>
+              <span class="toggle-desc"
+                >Color change at 30 s and 20% time remaining</span
+              >
+            </div>
+            <label class="sw" aria-label="Warning indicator">
+              <input type="checkbox" id="opt-warning" checked />
+              <span class="sw-track"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+     SCRIPTS
+═══════════════════════════════════════════════════════ -->
+    <script>
+      "use strict";
+
+      /* ─────────────────────────────────────────────────────────
+   CONSTANTS
+───────────────────────────────────────────────────────── */
+      const DURATION_PRESETS = [
+        { label: "1 min", s: 60 },
+        { label: "2 min", s: 120 },
+        { label: "3 min", s: 180 },
+        { label: "5 min", s: 300 },
+        { label: "10 min", s: 600 },
+        { label: "15 min", s: 900 },
+        { label: "20 min", s: 1200 },
+        { label: "30 min", s: 1800 },
+      ];
+
+      const SLIDE_PRESETS = [
+        { label: "5 s", ms: 5000 },
+        { label: "10 s", ms: 10000 },
+        { label: "15 s", ms: 15000 },
+        { label: "20 s", ms: 20000 },
+        { label: "30 s", ms: 30000 },
+      ];
+
+      const RING_C = 276.46; // 2π × 44
+
+      /* ─────────────────────────────────────────────────────────
+   SETTINGS — PERSIST TO LOCALSTORAGE
+───────────────────────────────────────────────────────── */
+      const DEF = {
+        duration: 180,
+        slideMs: 10000,
+        autoRestart: true,
+        bellOn: true,
+        warnOn: true,
+      };
+
+      function loadSettings() {
+        try {
+          return Object.assign(
+            {},
+            DEF,
+            JSON.parse(localStorage.getItem("japa_prefs") || "{}")
+          );
+        } catch {
+          return Object.assign({}, DEF);
+        }
+      }
+
+      function saveSettings() {
+        try {
+          localStorage.setItem("japa_prefs", JSON.stringify(cfg));
+        } catch {}
+      }
+
+      const cfg = loadSettings();
+
+      /* ─────────────────────────────────────────────────────────
+   TIMER STATE
+───────────────────────────────────────────────────────── */
+      let totalSec = cfg.duration;
+      let timeLeft = cfg.duration;
+      let running = false;
+      let ticker = null;
+      let bellPending = false; // prevents double-trigger
+
+      /* ─────────────────────────────────────────────────────────
+   DOM REFERENCES
+───────────────────────────────────────────────────────── */
+      const $ = (id) => document.getElementById(id);
+
+      const elTimerDisplay = $("timer-display");
+      const elTimerLabel = $("timer-label");
+      const elDurationHint = $("timer-duration-hint");
+      const elRingFill = $("ring-fill");
+      const elBtnPlay = $("btn-play");
+      const elBtnReset = $("btn-reset");
+      const elBtnNext = $("btn-next");
+      const elFooter = $("footer");
+      const elShowFab = $("btn-show-controls");
+      const elOverlay = $("settings-overlay");
+
+      /* ─────────────────────────────────────────────────────────
+   AUDIO — TEMPLE BELL
+───────────────────────────────────────────────────────── */
+      let actx = null;
+      let bellClip = null;
+
+      function primeAudio() {
+        if (!actx)
+          actx = new (window.AudioContext || window.webkitAudioContext)();
+        if (actx.state === "suspended") actx.resume();
+      }
+
+      async function loadBell() {
+        try {
+          primeAudio();
+          const r = await fetch("Temple_Bell_Sound.mp3");
+          if (!r.ok) return;
+          const full = await actx.decodeAudioData(await r.arrayBuffer());
+          const clipLen = Math.min(
+            Math.floor(1.5 * full.sampleRate),
+            full.length
+          );
+          bellClip = actx.createBuffer(
+            full.numberOfChannels,
+            clipLen,
+            full.sampleRate
+          );
+          for (let ch = 0; ch < full.numberOfChannels; ch++) {
+            bellClip
+              .getChannelData(ch)
+              .set(full.getChannelData(ch).subarray(0, clipLen));
+          }
+        } catch (e) {
+          console.warn("Bell not loaded:", e);
+        }
+      }
+
+      function strikeBell(when) {
+        if (!bellClip || !actx) return;
+        const src = actx.createBufferSource();
+        src.buffer = bellClip;
+        src.connect(actx.destination);
+        src.start(when);
+      }
+
+      function ringBell() {
+        if (!cfg.bellOn) return;
+        primeAudio();
+        const now = actx.currentTime;
+        strikeBell(now);
+        strikeBell(now + 1.5);
+        strikeBell(now + 3.0);
+      }
+
+      /* ─────────────────────────────────────────────────────────
+   SLIDESHOW
+───────────────────────────────────────────────────────── */
+      let images = [];
+      let imgIdx = 0;
+      let slideJob = null;
+
+      async function loadImages() {
+        // Try dev API first, then bundled JSON (APK / offline)
+        for (const url of ["/api/images", "image-list.json"]) {
+          try {
+            const r = await fetch(url);
+            if (!r.ok) continue;
+            const data = await r.json();
+            if (Array.isArray(data) && data.length) {
+              images = data;
+              break;
+            }
+          } catch {}
+        }
+
+        if (!images.length) {
+          $("no-images").classList.add("show");
+          return;
+        }
+
+        const ss = $("slideshow");
+        const mkSlide = (id, active) => {
+          const d = document.createElement("div");
+          d.id = id;
+          d.className = "slide" + (active ? " active" : "");
+          return d;
+        };
+        const sA = mkSlide("slide-a", true);
+        const sB = mkSlide("slide-b", false);
+        ss.append(sA, sB);
+        sA.style.backgroundImage = imgUrl(images[0]);
+
+        images.forEach((n) => {
+          const i = new Image();
+          i.src = `/NRJD_Pics/${encodeURIComponent(n)}`;
+        });
+        scheduleSlides();
+      }
+
+      function imgUrl(name) {
+        return `url("/NRJD_Pics/${encodeURIComponent(name)}")`;
+      }
+
+      function advanceSlide() {
+        if (images.length <= 1) return;
+        imgIdx = (imgIdx + 1) % images.length;
+        const a = $("slide-a"),
+          b = $("slide-b");
+        if (!a || !b) return;
+        const [next, prev] = a.classList.contains("active") ? [b, a] : [a, b];
+        next.style.backgroundImage = imgUrl(images[imgIdx]);
+        prev.classList.remove("active");
+        next.classList.add("active");
+      }
+
+      function scheduleSlides() {
+        clearInterval(slideJob);
+        slideJob = setInterval(advanceSlide, cfg.slideMs);
+      }
+
+      /* ─────────────────────────────────────────────────────────
+   TIMER LOGIC
+───────────────────────────────────────────────────────── */
+      function fmt(s) {
+        return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+      }
+
+      function updateUI() {
+        elTimerDisplay.textContent = fmt(timeLeft);
+        elDurationHint.textContent = `/ ${fmt(totalSec)}`;
+
+        // Ring progress (drains from full to empty)
+        const pct = totalSec > 0 ? timeLeft / totalSec : 0;
+        elRingFill.style.strokeDashoffset = String(RING_C * (1 - pct));
+
+        // State classes
+        const states = ["state-warning", "state-danger"];
+        elTimerDisplay.classList.remove(...states);
+        elRingFill.classList.remove(...states);
+
+        if (timeLeft === 0) {
+          elTimerDisplay.classList.add("state-danger");
+          elRingFill.classList.add("state-danger");
+          elTimerLabel.textContent = "complete";
+        } else if (cfg.warnOn && timeLeft <= 10) {
+          elTimerDisplay.classList.add("state-danger");
+          elRingFill.classList.add("state-danger");
+          elTimerLabel.textContent = "remaining";
+        } else if (
+          cfg.warnOn &&
+          (timeLeft <= 30 || timeLeft <= totalSec * 0.18)
+        ) {
+          elTimerDisplay.classList.add("state-warning");
+          elRingFill.classList.add("state-warning");
+          elTimerLabel.textContent = "remaining";
+        } else {
+          elTimerLabel.textContent = "remaining";
+        }
+
+        elBtnPlay.textContent = running ? "⏸" : "▶";
+        elBtnPlay.disabled = timeLeft === 0 && !running;
+        elBtnReset.disabled = timeLeft === totalSec && !running;
+      }
+
+      function startTimer() {
+        if (running || timeLeft <= 0) return;
+        primeAudio();
+        running = true;
+        updateUI();
+        ticker = setInterval(() => {
+          timeLeft = Math.max(0, timeLeft - 1);
+          updateUI();
+          if (timeLeft === 0 && !bellPending) {
+            bellPending = true;
+            stopTicker();
+            ringBell();
+            animateBellBtn();
+            if (cfg.autoRestart) {
+              setTimeout(() => {
+                bellPending = false;
+                timeLeft = totalSec;
+                updateUI();
+                startTimer();
+              }, 5600);
+            } else {
+              bellPending = false;
+            }
+          }
+        }, 1000);
+      }
+
+      function pauseTimer() {
+        if (!running) return;
+        stopTicker();
+        updateUI();
+      }
+
+      function stopTicker() {
+        running = false;
+        clearInterval(ticker);
+        ticker = null;
+      }
+
+      function resetTimer(newDur) {
+        stopTicker();
+        if (typeof newDur === "number") {
+          totalSec = newDur;
+          cfg.duration = newDur;
+        }
+        timeLeft = totalSec;
+        bellPending = false;
+        updateUI();
+      }
+
+      function toggleTimer() {
+        running ? pauseTimer() : startTimer();
+      }
+
+      function nextParticipant() {
+        primeAudio();
+        ringBell();
+        animateBellBtn();
+        stopTicker();
+        bellPending = false;
+        timeLeft = totalSec;
+        running = false;
+        updateUI();
+      }
+
+      function animateBellBtn() {
+        elBtnNext.querySelector(".bell-inner")?.remove();
+        const s = document.createElement("span");
+        s.className = "bell-ringing bell-inner";
+        s.textContent = "🔔";
+        elBtnNext.textContent = " Next";
+        elBtnNext.prepend(s);
+        setTimeout(() => {
+          s.remove();
+          elBtnNext.textContent = "🔔 Next";
+        }, 2000);
+      }
+
+      /* ─────────────────────────────────────────────────────────
+   FULLSCREEN
+───────────────────────────────────────────────────────── */
+      function toggleFullscreen() {
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen().catch(() => {});
+        } else {
+          document.exitFullscreen().catch(() => {});
+        }
+      }
+
+      /* ─────────────────────────────────────────────────────────
+   CONTROLS VISIBILITY
+───────────────────────────────────────────────────────── */
+      let ctrlVisible = true;
+
+      function hideControls() {
+        ctrlVisible = false;
+        elFooter.classList.add("hidden");
+        elShowFab.classList.add("visible");
+      }
+
+      function showControls() {
+        ctrlVisible = true;
+        elFooter.classList.remove("hidden");
+        elShowFab.classList.remove("visible");
+      }
+
+      /* ─────────────────────────────────────────────────────────
+   SETTINGS PANEL
+───────────────────────────────────────────────────────── */
+      function openSettings() {
+        // Sync custom inputs to current duration
+        $("c-min").value = Math.floor(cfg.duration / 60);
+        $("c-sec").value = cfg.duration % 60;
+        elOverlay.classList.add("open");
+      }
+
+      function closeSettings() {
+        elOverlay.classList.remove("open");
+      }
+
+      function buildChips(containerId, presets, activeKey, onClick) {
+        const container = $(containerId);
+        presets.forEach((p) => {
+          const btn = document.createElement("button");
+          btn.className = "chip";
+          btn.textContent = p.label;
+          btn.dataset.val = p.s ?? p.ms;
+          if ((p.s ?? p.ms) === cfg[activeKey]) btn.classList.add("active");
+          btn.addEventListener("click", () => {
+            container
+              .querySelectorAll(".chip")
+              .forEach((c) => c.classList.remove("active"));
+            btn.classList.add("active");
+            onClick(p.s ?? p.ms);
+          });
+          container.appendChild(btn);
+        });
+      }
+
+      function syncChipActive(containerId, val) {
+        document
+          .querySelectorAll(`#${containerId} .chip`)
+          .forEach((c) =>
+            c.classList.toggle("active", parseInt(c.dataset.val) === val)
+          );
+      }
+
+      /* ─────────────────────────────────────────────────────────
+   PARTICLES
+───────────────────────────────────────────────────────── */
+      function spawnParticles() {
+        for (let i = 0; i < 14; i++) {
+          const p = document.createElement("div");
+          p.className = "particle";
+          const sz = Math.random() * 4 + 1.5;
+          p.style.cssText = `
+      width:${sz}px; height:${sz}px;
+      left:${Math.random() * 100}vw;
+      bottom:${Math.random() * 25}vh;
+      --dur:${(Math.random() * 14 + 8).toFixed(1)}s;
+      --del:${(Math.random() * 8).toFixed(1)}s;
+      --drift:${((Math.random() - 0.5) * 120).toFixed(0)}px;
+    `;
+          document.body.appendChild(p);
+        }
+      }
+
+      /* ─────────────────────────────────────────────────────────
+   WATERMARK
+───────────────────────────────────────────────────────── */
+      function buildWatermark() {
+        const wm = $("watermark");
+        const lines = [
+          "HARE KRISHNA HARE KRISHNA",
+          "KRISHNA KRISHNA HARE HARE",
+          "HARE RAMA HARE RAMA",
+          "RAMA RAMA HARE HARE",
+        ];
+        for (let i = 0; i < 64; i++) {
+          const s = document.createElement("span");
+          s.textContent = lines[i % lines.length];
+          wm.appendChild(s);
+        }
+      }
+
+      /* ─────────────────────────────────────────────────────────
+   EVENT WIRING
+───────────────────────────────────────────────────────── */
+      elBtnPlay.addEventListener("click", toggleTimer);
+      elBtnReset.addEventListener("click", () => resetTimer());
+      elBtnNext.addEventListener("click", nextParticipant);
+      $("btn-fullscreen").addEventListener("click", toggleFullscreen);
+      $("btn-open-settings").addEventListener("click", openSettings);
+      $("btn-hide-controls").addEventListener("click", hideControls);
+      elShowFab.addEventListener("click", showControls);
+      $("btn-settings-close").addEventListener("click", closeSettings);
+
+      // Close settings on overlay backdrop click
+      elOverlay.addEventListener("click", (e) => {
+        if (e.target === elOverlay) closeSettings();
+      });
+
+      // Duration chips
+      buildChips("duration-chips", DURATION_PRESETS, "duration", (newDur) => {
+        cfg.duration = newDur;
+        saveSettings();
+        resetTimer(newDur);
+        $("c-min").value = Math.floor(newDur / 60);
+        $("c-sec").value = newDur % 60;
+      });
+
+      // Slide interval chips
+      buildChips("slide-chips", SLIDE_PRESETS, "slideMs", (newMs) => {
+        cfg.slideMs = newMs;
+        saveSettings();
+        scheduleSlides();
+      });
+
+      // Custom time apply
+      $("btn-apply-custom").addEventListener("click", () => {
+        const m = Math.max(0, Math.min(99, parseInt($("c-min").value) || 0));
+        const s = Math.max(0, Math.min(59, parseInt($("c-sec").value) || 0));
+        const tot = m * 60 + s;
+        if (tot < 1) {
+          $("c-min").focus();
+          return;
+        }
+        cfg.duration = tot;
+        saveSettings();
+        resetTimer(tot);
+        syncChipActive("duration-chips", tot);
+      });
+
+      // Clamp numeric inputs
+      $("c-min").addEventListener("input", function () {
+        this.value = Math.min(99, Math.max(0, parseInt(this.value) || 0));
+      });
+      $("c-sec").addEventListener("input", function () {
+        this.value = Math.min(59, Math.max(0, parseInt(this.value) || 0));
+      });
+
+      // Option toggles
+      const TOGGLE_MAP = {
+        "opt-auto-restart": "autoRestart",
+        "opt-bell": "bellOn",
+        "opt-warning": "warnOn",
+      };
+      Object.entries(TOGGLE_MAP).forEach(([id, key]) => {
+        const el = $(id);
+        el.checked = cfg[key];
+        el.addEventListener("change", () => {
+          cfg[key] = el.checked;
+          saveSettings();
+          updateUI();
+        });
+      });
+
+      // Keyboard shortcuts
+      document.addEventListener("keydown", (e) => {
+        if (["INPUT", "TEXTAREA"].includes(e.target.tagName)) return;
+        switch (e.key) {
+          case " ":
+          case "Enter":
+            e.preventDefault();
+            toggleTimer();
+            break;
+          case "r":
+          case "R":
+            resetTimer();
+            break;
+          case "n":
+          case "N":
+            nextParticipant();
+            break;
+          case "f":
+          case "F":
+            toggleFullscreen();
+            break;
+          case "h":
+          case "H":
+            ctrlVisible ? hideControls() : showControls();
+            break;
+          case "s":
+          case "S":
+            openSettings();
+            break;
+          case "Escape":
+            closeSettings();
+            break;
+        }
+      });
+
+      /* ─────────────────────────────────────────────────────────
+   INIT
+───────────────────────────────────────────────────────── */
+      buildWatermark();
+      spawnParticles();
+      updateUI();
+      loadImages();
+      loadBell();
+
+      // Service worker registration
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("sw.js").catch(() => {});
+      }
+    </script>
+  </body>
 </html>
