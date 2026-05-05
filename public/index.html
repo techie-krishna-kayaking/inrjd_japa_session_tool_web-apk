@@ -6,7 +6,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no"
     />
-    <meta name="theme-color" content="#06040f" />
+    <meta name="theme-color" content="#fdf6ec" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta
       name="apple-mobile-web-app-status-bar-style"
@@ -16,59 +16,60 @@
     <meta name="mobile-web-app-capable" content="yes" />
     <title>Japa Session Tool</title>
     <link rel="manifest" href="manifest.json" />
-
-    <!-- Fonts – Cinzel for sacred display, Raleway for clean UI -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Raleway:wght@300;400;500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Nunito:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
 
     <style>
-      /* ═══════════════════════════════════════════════════════════
-   DESIGN TOKENS
-═══════════════════════════════════════════════════════════ */
+      /* ══════════════════════════════════════════════════════════════
+   DESIGN TOKENS — warm saffron-cream light palette
+══════════════════════════════════════════════════════════════ */
       :root {
-        /* Palette */
-        --bg-void: #04030a;
-        --bg-deep: #07051a;
-        --bg-surface: rgba(9, 7, 28, 0.88);
-        --gold-vivid: #f5c518;
-        --gold-primary: #c9901a;
-        --gold-muted: #8a6212;
-        --gold-dim: rgba(201, 144, 26, 0.18);
-        --text-primary: #f0e8d5;
-        --text-secondary: rgba(240, 232, 213, 0.6);
-        --text-dim: rgba(240, 232, 213, 0.3);
-        --glass-bg: rgba(4, 3, 12, 0.75);
-        --glass-border: rgba(201, 144, 26, 0.25);
-        --danger: #d94f4f;
-        --warning-color: #d97a30;
-        --success: #4caf73;
+        --cream: #fdf6ec;
+        --cream-deep: #f5e9d5;
+        --petal: #fff8f2;
+        --saffron: #e07820;
+        --saffron-lite: #f59a3a;
+        --gold: #b8690e;
+        --gold-vivid: #d4860f;
+        --marigold: #f0a830;
+        --tulsi: #3d7a52;
+        --tulsi-bg: rgba(61, 122, 82, 0.13);
 
-        /* Typography */
-        --font-sacred: "Cinzel", "Palatino Linotype", "Book Antiqua", Georgia,
-          serif;
-        --font-ui: "Raleway", "Trebuchet MS", Tahoma, sans-serif;
-        --font-mono: "Courier New", Courier, monospace;
+        --ink: #1e1008;
+        --ink-mid: #5a3212;
+        --ink-soft: #9b7040;
+        --ink-ghost: rgba(90, 50, 18, 0.35);
 
-        /* Layout */
-        --safe-top: env(safe-area-inset-top, 0px);
-        --safe-bottom: env(safe-area-inset-bottom, 0px);
-        --safe-left: env(safe-area-inset-left, 0px);
-        --safe-right: env(safe-area-inset-right, 0px);
+        --glass: rgba(253, 246, 236, 0.76);
+        --glass-deep: rgba(250, 239, 218, 0.86);
+        --glass-border: rgba(196, 130, 30, 0.22);
+        --glass-shine: rgba(255, 255, 255, 0.65);
 
-        /* Timer ring */
-        --ring-size: clamp(180px, 44vmin, 300px);
+        --warn: #c8520f;
+        --danger: #b53316;
 
-        /* Transitions */
-        --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+        --f-sacred: "Cinzel", Georgia, "Times New Roman", serif;
+        --f-ui: "Nunito", "Segoe UI", Tahoma, sans-serif;
+        --f-mono: "Courier New", Courier, monospace;
+
+        --st: env(safe-area-inset-top, 0px);
+        --sb: env(safe-area-inset-bottom, 0px);
+        --sl: env(safe-area-inset-left, 0px);
+        --sr: env(safe-area-inset-right, 0px);
+
+        /* Ring dimensions — radius 34, circumference 213.63 */
+        --ring: clamp(78px, 14vmin, 102px);
+        --ring-r: 34;
+        --ring-c: 213.63;
+
+        --ease: cubic-bezier(0.16, 1, 0.3, 1);
       }
 
-      /* ═══════════════════════════════════════════════════════════
-   RESET
-═══════════════════════════════════════════════════════════ */
+      /* ── Reset ────────────────────────────────────────────── */
       *,
       *::before,
       *::after {
@@ -76,29 +77,25 @@
         padding: 0;
         box-sizing: border-box;
       }
-
       html {
         height: 100%;
         -webkit-text-size-adjust: 100%;
-        text-size-adjust: 100%;
       }
-
       body {
         width: 100%;
         height: 100%;
         overflow: hidden;
-        font-family: var(--font-ui);
-        background: var(--bg-void);
-        color: var(--text-primary);
+        font-family: var(--f-ui);
+        background: var(--cream);
+        color: var(--ink);
         overscroll-behavior: none;
         -webkit-tap-highlight-color: transparent;
         touch-action: manipulation;
         user-select: none;
         -webkit-user-select: none;
       }
-
       button {
-        font-family: var(--font-ui);
+        font-family: var(--f-ui);
         cursor: pointer;
         border: none;
         outline: none;
@@ -106,12 +103,9 @@
         color: inherit;
         -webkit-tap-highlight-color: transparent;
       }
-
       input {
-        font-family: var(--font-ui);
+        font-family: var(--f-ui);
       }
-
-      /* Remove number input spinners */
       input[type="number"]::-webkit-inner-spin-button,
       input[type="number"]::-webkit-outer-spin-button {
         -webkit-appearance: none;
@@ -121,47 +115,45 @@
         appearance: textfield;
       }
 
-      /* ═══════════════════════════════════════════════════════════
-   BACKGROUND LAYERS
-═══════════════════════════════════════════════════════════ */
-      #bg-ambient {
+      /* ══════════════════════════════════════════════════════════════
+   BACKGROUND — warm layered radial gradient
+══════════════════════════════════════════════════════════════ */
+      #bg {
         position: fixed;
         inset: 0;
         z-index: 0;
+        pointer-events: none;
         background: radial-gradient(
-            ellipse 80% 60% at 20% 15%,
-            rgba(80, 40, 160, 0.14) 0%,
-            transparent 55%
+            ellipse 70% 55% at 12% 8%,
+            rgba(240, 168, 48, 0.2) 0%,
+            transparent 60%
           ),
           radial-gradient(
-            ellipse 60% 50% at 80% 80%,
-            rgba(160, 90, 10, 0.1) 0%,
-            transparent 55%
+            ellipse 55% 48% at 90% 88%,
+            rgba(224, 120, 32, 0.16) 0%,
+            transparent 60%
           ),
           radial-gradient(
-            ellipse 100% 70% at 50% 50%,
-            rgba(20, 10, 60, 0.5) 0%,
+            ellipse 80% 65% at 50% 50%,
+            rgba(253, 240, 218, 0.55) 0%,
             transparent 80%
           ),
-          linear-gradient(175deg, #07051a 0%, #04030c 50%, #060412 100%);
-        pointer-events: none;
+          linear-gradient(158deg, #fdf8f0 0%, #f8e8d0 45%, #fdf3e4 100%);
       }
-
-      /* Dot-grid sacred geometry overlay */
-      #bg-ambient::after {
+      #bg::after {
         content: "";
         position: absolute;
         inset: 0;
         background-image: radial-gradient(
           circle 1px at 1px 1px,
-          rgba(201, 144, 26, 0.12) 0%,
+          rgba(180, 100, 20, 0.08) 0%,
           transparent 0%
         );
-        background-size: 36px 36px;
+        background-size: 34px 34px;
         pointer-events: none;
       }
 
-      /* Mantra watermark (tiled, very faint) */
+      /* Watermark */
       #watermark {
         position: fixed;
         inset: 0;
@@ -170,31 +162,30 @@
         flex-wrap: wrap;
         align-content: center;
         justify-content: center;
-        gap: clamp(10px, 2.5vw, 20px) clamp(20px, 5vw, 52px);
+        gap: clamp(8px, 2vw, 16px) clamp(20px, 5vw, 46px);
         padding: 16px;
-        opacity: 0.055;
+        opacity: 0.042;
         pointer-events: none;
         overflow: hidden;
       }
       #watermark span {
-        font-family: var(--font-sacred);
-        font-size: clamp(0.55rem, 1.4vw, 1rem);
+        font-family: var(--f-sacred);
+        font-size: clamp(0.46rem, 1.1vw, 0.75rem);
         font-weight: 600;
-        color: var(--gold-vivid);
-        letter-spacing: 0.1em;
+        color: var(--gold);
+        letter-spacing: 0.13em;
         white-space: nowrap;
       }
 
-      /* ═══════════════════════════════════════════════════════════
+      /* ══════════════════════════════════════════════════════════════
    SLIDESHOW
-═══════════════════════════════════════════════════════════ */
+══════════════════════════════════════════════════════════════ */
       #slideshow {
         position: fixed;
         inset: 0;
         z-index: 2;
         pointer-events: none;
       }
-
       .slide {
         position: absolute;
         inset: 0;
@@ -209,21 +200,20 @@
         opacity: 1;
       }
 
-      /* Deep vignette over slideshow */
+      /* Warm light-bleed vignette — blends image into cream bg */
       #slideshow::after {
         content: "";
         position: absolute;
         inset: 0;
         background: radial-gradient(
-          ellipse at 50% 50%,
-          rgba(0, 0, 0, 0.05) 0%,
-          rgba(0, 0, 0, 0.45) 65%,
-          rgba(0, 0, 0, 0.8) 100%
+          ellipse 82% 76% at 50% 50%,
+          rgba(253, 246, 236, 0.06) 0%,
+          rgba(253, 246, 236, 0.3) 55%,
+          rgba(253, 246, 236, 0.78) 100%
         );
         pointer-events: none;
       }
 
-      /* No-images fallback message */
       #no-images {
         position: fixed;
         inset: 0;
@@ -231,59 +221,59 @@
         display: none;
         align-items: center;
         justify-content: center;
-        pointer-events: none;
       }
       #no-images.show {
         display: flex;
       }
       #no-images p {
         font-size: clamp(0.8rem, 2vw, 0.95rem);
-        color: var(--text-dim);
+        color: var(--ink-soft);
         text-align: center;
-        max-width: 360px;
-        line-height: 1.75;
-        background: var(--glass-bg);
+        max-width: 340px;
+        line-height: 1.8;
+        background: var(--glass-deep);
         border: 1px solid var(--glass-border);
-        border-radius: 16px;
+        border-radius: 20px;
         padding: clamp(16px, 4vw, 28px) clamp(20px, 5vw, 36px);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        box-shadow: 0 8px 36px rgba(120, 60, 0, 0.13);
       }
 
-      /* ═══════════════════════════════════════════════════════════
-   APP SHELL — GRID LAYOUT
-═══════════════════════════════════════════════════════════ */
+      /* ══════════════════════════════════════════════════════════════
+   APP SHELL
+══════════════════════════════════════════════════════════════ */
       #app {
         position: fixed;
         inset: 0;
         z-index: 10;
         display: grid;
-        grid-template-rows: auto 1fr auto;
-        grid-template-areas: "header" "main" "footer";
-        padding: calc(var(--safe-top) + clamp(8px, 2vw, 14px))
-          calc(var(--safe-right) + clamp(10px, 2.5vw, 18px))
-          calc(var(--safe-bottom) + clamp(8px, 2vw, 14px))
-          calc(var(--safe-left) + clamp(10px, 2.5vw, 18px));
-        pointer-events: none; /* children opt-in */
+        grid-template-rows: auto auto 1fr auto;
+        grid-template-areas: "topbar" "mantra" "." "ctrls";
+        padding: calc(var(--st) + clamp(8px, 2vw, 14px))
+          calc(var(--sr) + clamp(12px, 3vw, 20px))
+          calc(var(--sb) + clamp(10px, 2.5vw, 16px))
+          calc(var(--sl) + clamp(12px, 3vw, 20px));
+        gap: clamp(8px, 1.8vh, 14px);
+        pointer-events: none;
       }
 
-      /* ═══════════════════════════════════════════════════════════
-   HEADER — BRAND + ACTIONS
-═══════════════════════════════════════════════════════════ */
-      #header {
-        grid-area: header;
+      /* ══════════════════════════════════════════════════════════════
+   TOP BAR — brand LEFT | icon-btns + compact ring-timer RIGHT
+══════════════════════════════════════════════════════════════ */
+      #topbar {
+        grid-area: topbar;
         display: flex;
         align-items: center;
         justify-content: space-between;
         gap: 10px;
         pointer-events: auto;
-        animation: slide-down 0.7s var(--ease-out-expo) 0.1s both;
+        animation: fadeDown 0.6s var(--ease) 0.05s both;
       }
-
-      @keyframes slide-down {
+      @keyframes fadeDown {
         from {
           opacity: 0;
-          transform: translateY(-16px);
+          transform: translateY(-14px);
         }
         to {
           opacity: 1;
@@ -291,326 +281,294 @@
         }
       }
 
-      /* Brand identity — change org name/logo here */
+      /* Brand */
       #brand {
         display: flex;
         align-items: center;
         gap: clamp(8px, 2vw, 12px);
       }
-
-      #brand-emblem {
-        width: clamp(34px, 7vw, 46px);
-        height: clamp(34px, 7vw, 46px);
-        border-radius: 10px;
+      #badge {
+        width: clamp(38px, 8.5vw, 50px);
+        height: clamp(38px, 8.5vw, 50px);
+        border-radius: 13px;
         background: linear-gradient(
-          140deg,
-          var(--gold-primary) 0%,
-          var(--gold-vivid) 100%
+          148deg,
+          var(--saffron) 0%,
+          var(--marigold) 100%
         );
         display: flex;
         align-items: center;
         justify-content: center;
-        font-family: var(--font-sacred);
-        font-size: clamp(1rem, 2.5vw, 1.45rem);
+        font-family: var(--f-sacred);
+        font-size: clamp(1.05rem, 2.8vw, 1.5rem);
         font-weight: 900;
-        color: var(--bg-void);
+        color: #fff;
         flex-shrink: 0;
-        box-shadow: 0 0 20px rgba(201, 144, 26, 0.38),
-          0 2px 8px rgba(0, 0, 0, 0.5);
+        box-shadow: 0 4px 18px rgba(212, 134, 15, 0.4),
+          0 1px 4px rgba(0, 0, 0, 0.1);
       }
-
-      #brand-copy {
+      #b-copy {
         display: flex;
         flex-direction: column;
-        line-height: 1.15;
+        line-height: 1.2;
       }
-
-      #brand-name {
-        font-family: var(--font-sacred);
-        font-size: clamp(0.6rem, 1.5vw, 0.88rem);
-        font-weight: 600;
-        color: var(--gold-vivid);
-        letter-spacing: 0.14em;
+      #b-name {
+        font-family: var(--f-sacred);
+        font-size: clamp(0.58rem, 1.5vw, 0.88rem);
+        font-weight: 700;
+        color: var(--gold);
+        letter-spacing: 0.13em;
         text-transform: uppercase;
-        text-shadow: 0 0 14px rgba(245, 197, 24, 0.45);
       }
-
-      #brand-sub {
-        font-size: clamp(0.48rem, 1.1vw, 0.65rem);
-        font-weight: 300;
-        color: var(--text-dim);
+      #b-sub {
+        font-size: clamp(0.44rem, 1.1vw, 0.62rem);
+        font-weight: 500;
+        color: var(--ink-soft);
         letter-spacing: 0.06em;
       }
 
-      /* Icon buttons (header actions) */
-      #header-actions {
+      /* Right cluster — icon buttons + ring timer */
+      #right-cluster {
         display: flex;
-        gap: clamp(6px, 1.5vw, 10px);
+        align-items: center;
+        gap: clamp(6px, 1.5vw, 9px);
       }
 
-      .icon-btn {
-        width: clamp(36px, 8vw, 44px);
-        height: clamp(36px, 8vw, 44px);
+      .ic-btn {
+        width: clamp(34px, 7.5vw, 42px);
+        height: clamp(34px, 7.5vw, 42px);
         border-radius: 10px;
-        background: var(--glass-bg);
+        background: var(--glass);
         border: 1px solid var(--glass-border);
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: clamp(0.9rem, 2.2vw, 1.15rem);
-        color: var(--text-secondary);
-        backdrop-filter: blur(14px);
-        -webkit-backdrop-filter: blur(14px);
-        transition: background 0.2s, border-color 0.2s, color 0.2s,
-          transform 0.1s;
-        pointer-events: auto;
+        font-size: clamp(0.85rem, 2vw, 1.05rem);
+        color: var(--ink-mid);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        box-shadow: inset 0 1px 0 var(--glass-shine),
+          0 2px 10px rgba(120, 60, 0, 0.08);
         cursor: pointer;
+        transition: background 0.18s, color 0.18s, transform 0.12s;
       }
-      .icon-btn:hover {
-        background: rgba(201, 144, 26, 0.14);
-        border-color: var(--gold-muted);
-        color: var(--gold-vivid);
+      .ic-btn:hover {
+        background: rgba(212, 134, 15, 0.18);
+        color: var(--gold);
       }
-      .icon-btn:active {
-        transform: scale(0.9);
-      }
-
-      /* ═══════════════════════════════════════════════════════════
-   MAIN CONTENT AREA
-═══════════════════════════════════════════════════════════ */
-      #main {
-        grid-area: main;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: clamp(20px, 5vmin, 44px);
-        padding: clamp(8px, 2vw, 16px);
-        pointer-events: none;
-        animation: fade-up 0.9s var(--ease-out-expo) 0.25s both;
+      .ic-btn:active {
+        transform: scale(0.88);
       }
 
-      @keyframes fade-up {
-        from {
-          opacity: 0;
-          transform: translateY(20px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-
-      /* ═══════════════════════════════════════════════════════════
-   TIMER — SVG PROGRESS RING
-═══════════════════════════════════════════════════════════ */
-      #timer-wrap {
+      /* ── RING TIMER (compact, top-right) ─────────────────── */
+      #ring-wrap {
         position: relative;
-        width: var(--ring-size);
-        height: var(--ring-size);
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        width: var(--ring);
+        height: var(--ring);
         flex-shrink: 0;
       }
-
-      #timer-svg {
+      #ring-svg {
         position: absolute;
         inset: 0;
         width: 100%;
         height: 100%;
-        transform: rotate(-90deg); /* start ring at top */
-        pointer-events: none;
+        transform: rotate(-90deg);
         overflow: visible;
       }
-
-      #ring-track {
+      #ring-bg {
+        fill: var(--glass-deep);
+        stroke: var(--glass-border);
+        stroke-width: 1;
+      }
+      circle#rtrack {
         fill: none;
-        stroke: rgba(201, 144, 26, 0.1);
+        stroke: rgba(180, 100, 20, 0.13);
         stroke-width: 5;
       }
-
-      #ring-fill {
+      circle#rfill {
         fill: none;
-        stroke: var(--gold-primary);
+        stroke: var(--saffron);
         stroke-width: 5;
         stroke-linecap: round;
-        /* r=44 → C = 2πr ≈ 276.46 */
-        stroke-dasharray: 276.46;
+        stroke-dasharray: 213.63;
         stroke-dashoffset: 0;
-        transition: stroke-dashoffset 1s linear, stroke 0.4s;
-        filter: drop-shadow(0 0 6px rgba(201, 144, 26, 0.65));
+        transition: stroke-dashoffset 1s linear, stroke 0.35s;
+        filter: drop-shadow(0 0 5px rgba(224, 120, 32, 0.5));
       }
-
-      #ring-fill.state-warning {
-        stroke: var(--warning-color);
-        filter: drop-shadow(0 0 8px rgba(217, 122, 48, 0.75));
+      circle#rfill.warn {
+        stroke: var(--warn);
+        filter: drop-shadow(0 0 6px rgba(200, 82, 15, 0.6));
       }
-
-      #ring-fill.state-danger {
+      circle#rfill.danger {
         stroke: var(--danger);
-        filter: drop-shadow(0 0 10px rgba(217, 79, 79, 0.85));
-        animation: ring-throb 0.85s ease-in-out infinite;
+        filter: drop-shadow(0 0 7px rgba(181, 51, 22, 0.7));
+        animation: throb 0.85s ease-in-out infinite;
       }
-
-      @keyframes ring-throb {
+      @keyframes throb {
         0%,
         100% {
           opacity: 1;
         }
         50% {
-          opacity: 0.35;
+          opacity: 0.28;
         }
       }
 
-      /* Outer decorative tick ring (purely visual) */
-      #ring-deco {
-        fill: none;
-        stroke: rgba(201, 144, 26, 0.06);
-        stroke-width: 1;
-        stroke-dasharray: 4 8;
-      }
-
-      /* Center content */
-      #timer-center {
-        position: relative;
+      #ring-center {
+        position: absolute;
+        inset: 0;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        gap: 2px;
-        text-align: center;
+        gap: 1px;
       }
-
-      #timer-display {
-        font-family: var(--font-mono);
-        font-size: clamp(2.2rem, 8.5vmin, 5rem);
+      #t-disp {
+        font-family: var(--f-mono);
+        font-size: clamp(0.92rem, 2.7vmin, 1.38rem);
         font-weight: bold;
-        color: var(--text-primary);
-        letter-spacing: -0.015em;
         line-height: 1;
-        text-shadow: 0 0 32px rgba(201, 144, 26, 0.35),
-          0 2px 6px rgba(0, 0, 0, 0.9);
-        transition: color 0.35s;
+        color: var(--ink);
+        letter-spacing: -0.02em;
+        transition: color 0.28s;
       }
-
-      #timer-display.state-warning {
-        color: var(--warning-color);
+      #t-disp.warn {
+        color: var(--warn);
       }
-      #timer-display.state-danger {
+      #t-disp.danger {
         color: var(--danger);
-        animation: text-pulse 0.85s ease-in-out infinite;
+        animation: throb 0.85s ease-in-out infinite;
       }
-
-      @keyframes text-pulse {
-        0%,
-        100% {
-          opacity: 1;
-        }
-        50% {
-          opacity: 0.45;
-        }
-      }
-
-      #timer-label {
-        font-family: var(--font-ui);
-        font-size: clamp(0.5rem, 1.4vmin, 0.7rem);
-        font-weight: 500;
-        color: var(--text-dim);
+      #t-lbl {
+        font-size: clamp(0.3rem, 0.85vmin, 0.46rem);
+        font-weight: 700;
         letter-spacing: 0.2em;
         text-transform: uppercase;
-        margin-top: 2px;
+        color: var(--ink-soft);
       }
 
-      #timer-duration-hint {
-        font-size: clamp(0.45rem, 1.2vmin, 0.62rem);
-        color: var(--text-dim);
-        letter-spacing: 0.08em;
-        opacity: 0.7;
+      /* ══════════════════════════════════════════════════════════════
+   MANTRA STRIP — slim pill below topbar
+══════════════════════════════════════════════════════════════ */
+      #mantra-row {
+        grid-area: mantra;
+        display: flex;
+        justify-content: center;
+        pointer-events: none;
+        animation: fadeDown 0.7s var(--ease) 0.14s both;
       }
-
-      /* ═══════════════════════════════════════════════════════════
-   MANTRA CARD
-═══════════════════════════════════════════════════════════ */
-      #mantra-card {
+      /* ── MANTRA TICKER / MARQUEE ──────────────────────────── */
+      #mantra-pill {
         position: relative;
-        background: var(--glass-bg);
+        background: var(--glass);
         border: 1px solid var(--glass-border);
-        border-radius: 20px;
-        padding: clamp(14px, 3.5vw, 30px) clamp(18px, 6vw, 60px);
-        text-align: center;
+        border-radius: 100px;
+        padding: clamp(9px, 2vw, 13px) 0;
         backdrop-filter: blur(22px);
         -webkit-backdrop-filter: blur(22px);
-        box-shadow: inset 0 1px 0 rgba(201, 144, 26, 0.15),
-          inset 0 -1px 0 rgba(201, 144, 26, 0.08),
-          0 8px 40px rgba(0, 0, 0, 0.55), 0 0 80px rgba(201, 144, 26, 0.04);
-        max-width: min(92vw, 680px);
-        width: 100%;
-        overflow: hidden;
+        box-shadow: inset 0 1px 0 var(--glass-shine),
+          0 4px 24px rgba(120, 60, 0, 0.1), 0 1px 3px rgba(120, 60, 0, 0.06);
+        width: min(96vw, 700px);
+        overflow: hidden; /* clips the scrolling text at the edges */
       }
 
-      /* Top shimmer line */
-      #mantra-card::before {
+      /* Fade edges left and right */
+      #mantra-pill::before,
+      #mantra-pill::after {
         content: "";
         position: absolute;
         top: 0;
-        left: 15%;
-        right: 15%;
-        height: 1px;
+        bottom: 0;
+        width: clamp(28px, 8vw, 56px);
+        z-index: 2;
+        pointer-events: none;
+      }
+      #mantra-pill::before {
+        left: 0;
         background: linear-gradient(
-          90deg,
-          transparent,
-          rgba(245, 197, 24, 0.6),
-          transparent
+          to right,
+          var(--glass) 0%,
+          transparent 100%
         );
+        border-radius: 100px 0 0 100px;
+      }
+      #mantra-pill::after {
+        right: 0;
+        background: linear-gradient(to left, var(--glass) 0%, transparent 100%);
+        border-radius: 0 100px 100px 0;
       }
 
-      #mantra-text {
-        font-family: var(--font-sacred);
-        font-size: clamp(0.85rem, 2.8vw, 1.55rem);
+      /* Scrolling track */
+      #mantra-track {
+        display: flex;
+        align-items: center;
+        white-space: nowrap;
+        animation: ticker 18s linear infinite;
+        will-change: transform;
+      }
+      #mantra-track:hover {
+        animation-play-state: paused;
+      }
+
+      @keyframes ticker {
+        0% {
+          transform: translateX(0);
+        }
+        100% {
+          transform: translateX(-50%);
+        } /* moves exactly one copy width — seamless loop */
+      }
+
+      /* Each copy of the mantra string */
+      .m-copy {
+        display: inline-flex;
+        align-items: center;
+        font-family: var(--f-sacred);
+        font-size: clamp(0.62rem, 1.6vw, 0.94rem);
         font-weight: 600;
-        color: var(--text-primary);
-        line-height: 1.75;
-        letter-spacing: 0.07em;
-        text-shadow: 0 0 24px rgba(201, 144, 26, 0.15),
-          0 1px 4px rgba(0, 0, 0, 0.8);
+        color: var(--ink-mid);
+        letter-spacing: 0.13em;
+        line-height: 1;
+        padding: 0 clamp(20px, 5vw, 48px); /* gap between end of copy A and start of copy B */
+        flex-shrink: 0;
+      }
+      .mhi {
+        color: var(--saffron);
+        font-weight: 700;
+      }
+      .msep {
+        display: inline-block;
+        margin: 0 clamp(6px, 1.4vw, 11px);
+        color: var(--ink-ghost);
+        font-size: 0.8em;
       }
 
-      .m-line {
-        display: block;
+      @media (max-width: 380px) {
+        .m-copy {
+          font-size: 0.58rem;
+          letter-spacing: 0.09em;
+        }
+        #mantra-track {
+          animation-duration: 14s;
+        }
       }
 
-      /* Highlight specific words */
-      .m-gold {
-        color: var(--gold-vivid);
-        text-shadow: 0 0 18px rgba(245, 197, 24, 0.45),
-          0 1px 3px rgba(0, 0, 0, 0.7);
-      }
-
-      /* ═══════════════════════════════════════════════════════════
-   FOOTER / CONTROLS
-═══════════════════════════════════════════════════════════ */
-      #footer {
-        grid-area: footer;
+      /* ══════════════════════════════════════════════════════════════
+   BOTTOM CONTROLS — single clean pill, NO hide-button
+══════════════════════════════════════════════════════════════ */
+      #ctrls {
+        grid-area: ctrls;
         display: flex;
         align-items: center;
         justify-content: center;
         gap: clamp(6px, 1.5vw, 10px);
         pointer-events: auto;
-        animation: slide-up 0.7s var(--ease-out-expo) 0.4s both;
-        transition: opacity 0.35s, transform 0.35s var(--ease-out-expo);
+        animation: fadeUp 0.6s var(--ease) 0.28s both;
       }
-
-      #footer.hidden {
-        opacity: 0;
-        transform: translateY(110%);
-        pointer-events: none;
-      }
-
-      @keyframes slide-up {
+      @keyframes fadeUp {
         from {
           opacity: 0;
-          transform: translateY(20px);
+          transform: translateY(14px);
         }
         to {
           opacity: 1;
@@ -618,148 +576,146 @@
         }
       }
 
-      /* Pill container */
-      .ctrl-pill {
+      /* Glass pill */
+      .pill {
         display: flex;
         align-items: center;
-        gap: 2px;
-        background: var(--glass-bg);
+        gap: 3px;
+        background: var(--glass-deep);
         border: 1px solid var(--glass-border);
-        border-radius: 50px;
+        border-radius: 100px;
         padding: 5px 6px;
-        backdrop-filter: blur(18px);
-        -webkit-backdrop-filter: blur(18px);
-        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.45);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        box-shadow: inset 0 1px 0 var(--glass-shine),
+          0 6px 30px rgba(120, 60, 0, 0.14), 0 2px 6px rgba(120, 60, 0, 0.08);
       }
 
-      /* Generic control button */
-      .ctrl-btn {
+      /* Text buttons inside pill */
+      .cb {
         display: flex;
         align-items: center;
         justify-content: center;
         gap: 5px;
-        padding: clamp(9px, 2.2vw, 12px) clamp(14px, 3.5vw, 22px);
-        border-radius: 50px;
-        font-family: var(--font-ui);
+        padding: clamp(9px, 2.3vw, 12px) clamp(14px, 3.6vw, 22px);
+        border-radius: 100px;
+        min-height: 44px;
         font-size: clamp(0.68rem, 1.7vw, 0.82rem);
-        font-weight: 600;
-        letter-spacing: 0.04em;
-        color: var(--text-secondary);
-        background: transparent;
+        font-weight: 700;
+        letter-spacing: 0.03em;
+        color: var(--ink-mid);
         border: 1px solid transparent;
-        transition: background 0.2s, color 0.2s, border-color 0.2s,
+        transition: background 0.18s, color 0.18s, border-color 0.18s,
           transform 0.12s;
         white-space: nowrap;
-        min-height: 44px; /* WCAG / Apple touch target */
         cursor: pointer;
       }
-
-      .ctrl-btn:hover {
-        background: rgba(255, 255, 255, 0.07);
-        color: var(--text-primary);
+      .cb:hover {
+        background: rgba(180, 100, 20, 0.1);
+        color: var(--gold);
       }
-      .ctrl-btn:active {
-        transform: scale(0.91);
+      .cb:active {
+        transform: scale(0.9);
       }
-      .ctrl-btn:disabled {
-        opacity: 0.32;
+      .cb:disabled {
+        opacity: 0.28;
         cursor: not-allowed;
         transform: none !important;
       }
 
-      /* Play/Pause — main action, large gold circle */
+      /* Play/Pause — hero circle */
       #btn-play {
-        width: clamp(54px, 13vw, 70px);
-        height: clamp(54px, 13vw, 70px);
+        width: clamp(54px, 13.5vw, 70px);
+        height: clamp(54px, 13.5vw, 70px);
         border-radius: 50%;
-        background: linear-gradient(
-          140deg,
-          var(--gold-primary) 0%,
-          var(--gold-vivid) 100%
-        );
-        color: var(--bg-void);
-        font-size: clamp(1.1rem, 3vw, 1.5rem);
-        border: none;
-        box-shadow: 0 0 28px rgba(201, 144, 26, 0.55),
-          0 4px 14px rgba(0, 0, 0, 0.45);
         padding: 0;
         flex-shrink: 0;
+        border: none;
+        background: linear-gradient(
+          148deg,
+          var(--saffron) 0%,
+          var(--marigold) 100%
+        );
+        color: #fff;
+        font-size: clamp(1.1rem, 3.2vw, 1.5rem);
+        box-shadow: 0 0 0 3px rgba(224, 120, 32, 0.18),
+          0 6px 26px rgba(180, 90, 14, 0.44), 0 2px 6px rgba(0, 0, 0, 0.1);
         transition: box-shadow 0.2s, transform 0.12s;
       }
       #btn-play:hover {
-        box-shadow: 0 0 44px rgba(201, 144, 26, 0.75),
-          0 4px 20px rgba(0, 0, 0, 0.5);
+        box-shadow: 0 0 0 6px rgba(224, 120, 32, 0.22),
+          0 8px 34px rgba(180, 90, 14, 0.55);
         transform: scale(1.06);
       }
       #btn-play:active {
-        transform: scale(0.91);
+        transform: scale(0.9);
       }
       #btn-play:disabled {
-        opacity: 0.32;
+        opacity: 0.3;
         transform: none;
         box-shadow: none;
       }
 
-      /* Next/bell — accented */
-      .ctrl-btn.accent {
-        color: var(--gold-vivid);
+      /* Next — tulsi accent */
+      .cb.next {
+        color: var(--tulsi);
       }
-      .ctrl-btn.accent:hover {
-        background: rgba(201, 144, 26, 0.12);
-        border-color: rgba(201, 144, 26, 0.25);
+      .cb.next:hover {
+        background: var(--tulsi-bg);
+        color: var(--tulsi);
+        border-color: rgba(61, 122, 82, 0.26);
       }
 
-      /* Show-controls FAB (when controls are hidden) */
-      #btn-show-controls {
-        display: none;
-        position: fixed;
-        bottom: calc(var(--safe-bottom) + 14px);
-        right: 14px;
-        z-index: 50;
-        width: 44px;
-        height: 44px;
-        border-radius: 50%;
-        background: var(--glass-bg);
-        border: 1px solid var(--glass-border);
-        color: var(--text-secondary);
-        font-size: 1rem;
-        backdrop-filter: blur(14px);
-        -webkit-backdrop-filter: blur(14px);
-        cursor: pointer;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-        pointer-events: auto;
-        transition: background 0.2s, color 0.2s;
-      }
-      #btn-show-controls:hover {
-        background: rgba(201, 144, 26, 0.14);
-        color: var(--gold-vivid);
-      }
-      #btn-show-controls.visible {
+      /* Standalone settings pill button */
+      .pill-solo {
         display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: clamp(9px, 2.3vw, 12px) clamp(14px, 3.5vw, 20px);
+        border-radius: 100px;
+        min-height: 44px;
+        background: var(--glass-deep);
+        border: 1px solid var(--glass-border);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        box-shadow: inset 0 1px 0 var(--glass-shine),
+          0 6px 28px rgba(120, 60, 0, 0.12);
+        font-size: clamp(0.68rem, 1.7vw, 0.82rem);
+        font-weight: 700;
+        color: var(--ink-mid);
+        letter-spacing: 0.03em;
+        white-space: nowrap;
+        cursor: pointer;
+        transition: background 0.18s, color 0.18s, transform 0.12s;
+      }
+      .pill-solo:hover {
+        background: rgba(212, 134, 15, 0.18);
+        color: var(--gold);
+      }
+      .pill-solo:active {
+        transform: scale(0.92);
       }
 
-      /* ═══════════════════════════════════════════════════════════
-   SETTINGS PANEL — BOTTOM SHEET
-═══════════════════════════════════════════════════════════ */
-      #settings-overlay {
+      /* ══════════════════════════════════════════════════════════════
+   SETTINGS PANEL — bottom sheet
+══════════════════════════════════════════════════════════════ */
+      #s-overlay {
         position: fixed;
         inset: 0;
         z-index: 300;
-        background: rgba(0, 0, 0, 0.62);
-        backdrop-filter: blur(5px);
-        -webkit-backdrop-filter: blur(5px);
+        background: rgba(110, 55, 12, 0.28);
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
         opacity: 0;
         pointer-events: none;
-        transition: opacity 0.3s;
+        transition: opacity 0.28s;
       }
-      #settings-overlay.open {
+      #s-overlay.open {
         opacity: 1;
         pointer-events: auto;
       }
 
-      #settings-panel {
+      #s-panel {
         position: absolute;
         bottom: 0;
         left: 0;
@@ -767,225 +723,207 @@
         max-height: 88vh;
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
-        background: linear-gradient(175deg, #0d0b27 0%, #09071e 100%);
-        border: 1px solid var(--glass-border);
+        background: linear-gradient(170deg, #fdf6ec 0%, #f9eddb 100%);
+        border: 1px solid rgba(200, 140, 40, 0.2);
         border-bottom: none;
-        border-radius: 22px 22px 0 0;
-        padding: 0 calc(var(--safe-right) + clamp(16px, 4vw, 28px))
-          calc(var(--safe-bottom) + clamp(16px, 4vw, 24px))
-          calc(var(--safe-left) + clamp(16px, 4vw, 28px));
+        border-radius: 24px 24px 0 0;
+        padding: 0 calc(var(--sr) + clamp(16px, 4vw, 28px))
+          calc(var(--sb) + clamp(16px, 4vw, 24px))
+          calc(var(--sl) + clamp(16px, 4vw, 28px));
         transform: translateY(102%);
-        transition: transform 0.38s var(--ease-out-expo);
-        box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.7);
+        transition: transform 0.36s var(--ease);
+        box-shadow: 0 -8px 48px rgba(120, 60, 0, 0.18);
       }
-      #settings-overlay.open #settings-panel {
+      #s-overlay.open #s-panel {
         transform: translateY(0);
       }
 
-      /* Drag handle */
-      #settings-handle {
+      #s-handle {
         display: flex;
         justify-content: center;
         padding: 14px 0 10px;
       }
-      #settings-handle span {
-        width: 38px;
+      #s-handle span {
+        width: 36px;
         height: 4px;
         border-radius: 2px;
-        background: rgba(255, 255, 255, 0.18);
+        background: rgba(120, 60, 0, 0.18);
       }
 
-      /* Settings header */
-      #settings-header {
+      #s-hdr {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding-bottom: clamp(12px, 3vw, 20px);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-        margin-bottom: clamp(14px, 3vw, 22px);
+        padding-bottom: clamp(12px, 3vw, 18px);
+        border-bottom: 1px solid rgba(180, 100, 20, 0.11);
+        margin-bottom: clamp(14px, 3vw, 20px);
       }
-
-      #settings-title {
-        font-family: var(--font-sacred);
-        font-size: clamp(0.9rem, 2.5vw, 1.1rem);
-        font-weight: 600;
-        color: var(--gold-vivid);
-        letter-spacing: 0.06em;
+      #s-title {
+        font-family: var(--f-sacred);
+        font-size: clamp(0.88rem, 2.5vw, 1.05rem);
+        font-weight: 700;
+        color: var(--gold);
+        letter-spacing: 0.07em;
       }
-
-      #btn-settings-close {
+      #btn-sc {
         width: 32px;
         height: 32px;
         border-radius: 50%;
-        background: rgba(255, 255, 255, 0.07);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(180, 100, 20, 0.1);
+        border: 1px solid rgba(180, 100, 20, 0.14);
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 1rem;
-        color: var(--text-secondary);
+        font-size: 0.95rem;
+        color: var(--ink-soft);
         cursor: pointer;
-        transition: background 0.2s;
+        transition: background 0.18s;
       }
-      #btn-settings-close:hover {
-        background: rgba(255, 255, 255, 0.13);
-      }
-
-      /* Settings sections */
-      .s-section {
-        margin-bottom: clamp(18px, 4vw, 28px);
+      #btn-sc:hover {
+        background: rgba(180, 100, 20, 0.2);
       }
 
-      .s-label {
-        font-size: clamp(0.58rem, 1.4vw, 0.7rem);
-        font-weight: 600;
-        letter-spacing: 0.2em;
+      .s-sec {
+        margin-bottom: clamp(16px, 4vw, 24px);
+      }
+      .s-lbl {
+        font-size: clamp(0.54rem, 1.4vw, 0.66rem);
+        font-weight: 700;
+        letter-spacing: 0.22em;
         text-transform: uppercase;
-        color: var(--gold-primary);
-        margin-bottom: clamp(10px, 2.5vw, 16px);
+        color: var(--saffron);
+        margin-bottom: clamp(10px, 2.5vw, 14px);
       }
 
-      /* Preset chip grid */
-      .chip-grid {
+      /* Chips */
+      .chips {
         display: flex;
         flex-wrap: wrap;
-        gap: clamp(6px, 1.5vw, 10px);
+        gap: clamp(6px, 1.5vw, 9px);
       }
-
       .chip {
-        padding: clamp(7px, 1.8vw, 10px) clamp(14px, 3.5vw, 20px);
-        border-radius: 50px;
-        background: rgba(255, 255, 255, 0.06);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        font-family: var(--font-ui);
-        font-size: clamp(0.72rem, 1.8vw, 0.84rem);
-        font-weight: 500;
-        color: var(--text-secondary);
+        padding: clamp(7px, 1.8vw, 9px) clamp(14px, 3.5vw, 20px);
+        border-radius: 100px;
+        background: rgba(180, 100, 20, 0.07);
+        border: 1px solid rgba(180, 100, 20, 0.14);
+        font-size: clamp(0.68rem, 1.7vw, 0.8rem);
+        font-weight: 600;
+        color: var(--ink-mid);
         cursor: pointer;
-        transition: all 0.2s;
-        min-height: 40px;
+        transition: all 0.18s;
+        min-height: 38px;
       }
       .chip:hover {
-        background: rgba(201, 144, 26, 0.12);
-        border-color: var(--gold-muted);
-        color: var(--gold-vivid);
+        background: rgba(212, 134, 15, 0.16);
+        border-color: var(--gold);
+        color: var(--gold);
       }
-      .chip.active {
-        background: rgba(201, 144, 26, 0.22);
-        border-color: var(--gold-primary);
-        color: var(--gold-vivid);
-        box-shadow: 0 0 12px rgba(201, 144, 26, 0.22);
+      .chip.on {
+        background: linear-gradient(
+          135deg,
+          rgba(224, 120, 32, 0.24),
+          rgba(212, 134, 15, 0.18)
+        );
+        border-color: var(--saffron);
+        color: var(--saffron);
+        box-shadow: 0 0 10px rgba(224, 120, 32, 0.18);
       }
 
-      /* Custom time input row */
-      .custom-row {
+      /* Custom time row */
+      .cust-row {
         display: flex;
         align-items: center;
         flex-wrap: wrap;
-        gap: clamp(8px, 2vw, 14px);
-        background: rgba(255, 255, 255, 0.04);
-        border: 1px solid rgba(255, 255, 255, 0.08);
+        gap: clamp(8px, 2vw, 12px);
+        background: rgba(180, 100, 20, 0.06);
+        border: 1px solid rgba(180, 100, 20, 0.11);
         border-radius: 14px;
-        padding: clamp(10px, 2.5vw, 16px) clamp(14px, 3.5vw, 22px);
-        margin-top: clamp(8px, 2vw, 14px);
+        padding: clamp(10px, 2.5vw, 14px) clamp(14px, 3.5vw, 20px);
+        margin-top: clamp(8px, 2vw, 12px);
       }
-
-      .custom-row label {
-        font-size: clamp(0.72rem, 1.8vw, 0.82rem);
-        color: var(--text-secondary);
+      .cust-row label {
+        font-size: clamp(0.68rem, 1.7vw, 0.78rem);
+        color: var(--ink-soft);
         flex-shrink: 0;
       }
-
-      .time-input-group {
+      .t-grp {
         display: flex;
         align-items: center;
         gap: 6px;
       }
-
-      .t-input {
-        width: clamp(46px, 11vw, 62px);
-        padding: 7px 6px;
-        background: rgba(255, 255, 255, 0.09);
-        border: 1px solid rgba(255, 255, 255, 0.14);
+      .t-in {
+        width: clamp(44px, 11vw, 60px);
+        padding: 7px 5px;
+        background: var(--glass);
+        border: 1px solid var(--glass-border);
         border-radius: 8px;
-        color: var(--text-primary);
-        font-family: var(--font-mono);
-        font-size: clamp(0.9rem, 2.2vw, 1.05rem);
+        color: var(--ink);
+        font-family: var(--f-mono);
+        font-size: clamp(0.88rem, 2.2vw, 1rem);
         text-align: center;
-        transition: border-color 0.2s, box-shadow 0.2s;
+        transition: border-color 0.18s, box-shadow 0.18s;
       }
-      .t-input:focus {
+      .t-in:focus {
         outline: none;
-        border-color: var(--gold-primary);
-        box-shadow: 0 0 0 2px rgba(201, 144, 26, 0.22);
+        border-color: var(--saffron);
+        box-shadow: 0 0 0 2px rgba(224, 120, 32, 0.2);
       }
-
       .t-sep {
-        font-family: var(--font-mono);
+        font-family: var(--f-mono);
         font-size: 1.1rem;
-        color: var(--text-dim);
+        color: var(--ink-ghost);
         font-weight: bold;
       }
-
       .apply-btn {
-        padding: 8px clamp(14px, 3vw, 20px);
-        background: linear-gradient(
-          135deg,
-          var(--gold-primary),
-          var(--gold-vivid)
-        );
-        border: none;
-        border-radius: 50px;
-        color: var(--bg-void);
-        font-family: var(--font-ui);
-        font-size: clamp(0.72rem, 1.8vw, 0.82rem);
+        padding: 8px clamp(14px, 3vw, 18px);
+        border-radius: 100px;
+        background: linear-gradient(135deg, var(--saffron), var(--marigold));
+        color: #fff;
+        font-size: clamp(0.68rem, 1.7vw, 0.8rem);
         font-weight: 700;
         letter-spacing: 0.04em;
         cursor: pointer;
-        transition: box-shadow 0.2s, transform 0.12s;
+        min-height: 38px;
         white-space: nowrap;
-        min-height: 40px;
+        transition: box-shadow 0.18s, transform 0.12s;
       }
       .apply-btn:hover {
-        box-shadow: 0 0 18px rgba(201, 144, 26, 0.45);
+        box-shadow: 0 4px 18px rgba(224, 120, 32, 0.42);
       }
       .apply-btn:active {
-        transform: scale(0.94);
+        transform: scale(0.93);
       }
 
-      /* Toggle rows */
-      .toggle-row {
+      /* Toggles */
+      .trow {
         display: flex;
         align-items: center;
         justify-content: space-between;
         gap: 16px;
-        padding: clamp(10px, 2.5vw, 14px) 0;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        padding: clamp(10px, 2.5vw, 13px) 0;
+        border-bottom: 1px solid rgba(180, 100, 20, 0.08);
       }
-      .toggle-row:last-child {
+      .trow:last-child {
         border-bottom: none;
       }
-
-      .toggle-text {
+      .tr-txt {
         display: flex;
         flex-direction: column;
         gap: 2px;
       }
-      .toggle-name {
-        font-size: clamp(0.8rem, 2vw, 0.92rem);
-        font-weight: 500;
-        color: var(--text-primary);
+      .tr-name {
+        font-size: clamp(0.76rem, 1.9vw, 0.9rem);
+        font-weight: 600;
+        color: var(--ink);
       }
-      .toggle-desc {
-        font-size: clamp(0.62rem, 1.5vw, 0.72rem);
-        color: var(--text-dim);
+      .tr-desc {
+        font-size: clamp(0.58rem, 1.4vw, 0.68rem);
+        color: var(--ink-soft);
       }
-
-      /* Custom toggle switch */
       .sw {
         position: relative;
-        width: 48px;
-        height: 26px;
+        width: 46px;
+        height: 25px;
         flex-shrink: 0;
       }
       .sw input {
@@ -994,65 +932,62 @@
         height: 0;
         position: absolute;
       }
-      .sw-track {
+      .sw-t {
         position: absolute;
         inset: 0;
         border-radius: 13px;
-        background: rgba(255, 255, 255, 0.1);
+        background: rgba(180, 100, 20, 0.13);
         cursor: pointer;
-        transition: background 0.3s;
+        transition: background 0.28s;
       }
-      .sw-track::before {
+      .sw-t::before {
         content: "";
         position: absolute;
-        top: 3px;
-        left: 3px;
+        top: 2.5px;
+        left: 2.5px;
         width: 20px;
         height: 20px;
         border-radius: 50%;
-        background: rgba(255, 255, 255, 0.5);
-        transition: transform 0.3s var(--ease-out-expo), background 0.3s;
+        background: rgba(180, 100, 20, 0.4);
+        transition: transform 0.28s var(--ease), background 0.28s;
       }
-      .sw input:checked + .sw-track {
-        background: rgba(201, 144, 26, 0.42);
+      .sw input:checked + .sw-t {
+        background: rgba(224, 120, 32, 0.28);
       }
-      .sw input:checked + .sw-track::before {
-        transform: translateX(22px);
-        background: var(--gold-vivid);
+      .sw input:checked + .sw-t::before {
+        transform: translateX(21px);
+        background: var(--saffron);
       }
 
-      /* ═══════════════════════════════════════════════════════════
-   FLOATING PARTICLES
-═══════════════════════════════════════════════════════════ */
-      .particle {
+      /* ══════════════════════════════════════════════════════════════
+   PARTICLES
+══════════════════════════════════════════════════════════════ */
+      .ptc {
         position: fixed;
         border-radius: 50%;
         background: radial-gradient(
           circle,
-          var(--gold-vivid) 0%,
+          var(--marigold) 0%,
           transparent 70%
         );
         pointer-events: none;
         z-index: 3;
-        animation: particle-rise var(--dur) ease-in var(--del) infinite;
+        animation: rise var(--d) ease-in var(--dl) infinite;
         opacity: 0;
       }
-
-      @keyframes particle-rise {
+      @keyframes rise {
         0% {
           transform: translateY(0) translateX(0) scale(1);
-          opacity: 0.7;
+          opacity: 0.48;
         }
         100% {
-          transform: translateY(-110vh) translateX(var(--drift)) scale(0.1);
+          transform: translateY(-108vh) translateX(var(--dx)) scale(0.06);
           opacity: 0;
         }
       }
 
-      /* ═══════════════════════════════════════════════════════════
-   BELL ANIMATION
-═══════════════════════════════════════════════════════════ */
-      @keyframes bell-swing {
+      /* Bell swing */
+      @keyframes swing {
         0%,
         100% {
           transform: rotate(0);
@@ -1067,318 +1002,289 @@
           transform: rotate(8deg);
         }
         75% {
-          transform: rotate(-5deg);
+          transform: rotate(-4deg);
         }
       }
-      .bell-ringing {
-        animation: bell-swing 0.55s ease-in-out 3;
+      .ringing {
+        animation: swing 0.5s ease-in-out 3;
         display: inline-block;
       }
 
-      /* ═══════════════════════════════════════════════════════════
-   RESPONSIVE — LANDSCAPE SMALL (phones sideways)
-═══════════════════════════════════════════════════════════ */
+      /* ══════════════════════════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════════════════════════ */
+      /* Landscape small phones */
       @media (orientation: landscape) and (max-height: 480px) {
         :root {
-          --ring-size: clamp(110px, 26vh, 180px);
+          --ring: clamp(60px, 19vh, 80px);
         }
-
-        #main {
-          flex-direction: row;
-          gap: clamp(12px, 3vw, 24px);
-          padding: 4px clamp(8px, 2vw, 16px);
+        #app {
+          grid-template-rows: 1fr;
+          grid-template-columns: auto 1fr auto;
+          grid-template-areas: "topbar . ctrls";
+          gap: 0 10px;
         }
-
-        #mantra-card {
-          padding: 10px clamp(14px, 3vw, 24px);
-        }
-        #mantra-text {
-          font-size: clamp(0.72rem, 2vh, 0.95rem);
-          line-height: 1.65;
-        }
-        #brand-sub {
+        #mantra-row {
           display: none;
         }
-        #timer-label {
+        #b-sub {
           display: none;
         }
       }
-
-      /* ═══════════════════════════════════════════════════════════
-   RESPONSIVE — SMALL PHONES (< 375px)
-═══════════════════════════════════════════════════════════ */
+      /* Very small phones */
       @media (max-width: 374px) {
         :root {
-          --ring-size: clamp(150px, 52vw, 200px);
+          --ring: 70px;
         }
-
-        #brand-sub {
+        #b-sub {
           display: none;
         }
-        #mantra-card {
-          padding: 10px 14px;
-        }
-        #mantra-text {
-          font-size: 0.78rem;
-          line-height: 1.8;
-        }
-        #timer-display {
-          font-size: 2rem;
-        }
-        .ctrl-btn {
+        .cb {
           padding: 8px 10px;
-          font-size: 0.66rem;
+          font-size: 0.64rem;
         }
         #btn-play {
           width: 50px;
           height: 50px;
           font-size: 1rem;
         }
-      }
-
-      /* ═══════════════════════════════════════════════════════════
-   RESPONSIVE — LARGE PHONES / PHABLETS (≥ 430px)
-═══════════════════════════════════════════════════════════ */
-      @media (min-width: 430px) {
         #mantra-text {
-          font-size: clamp(0.95rem, 3.2vw, 1.65rem);
+          font-size: 0.5rem;
+          letter-spacing: 0.08em;
         }
       }
-
-      /* ═══════════════════════════════════════════════════════════
-   RESPONSIVE — TABLET (≥ 768px)
-═══════════════════════════════════════════════════════════ */
+      /* Tablet */
       @media (min-width: 768px) {
         :root {
-          --ring-size: clamp(240px, 34vmin, 290px);
+          --ring: clamp(92px, 12vmin, 114px);
         }
-
         #mantra-text {
-          font-size: clamp(1.1rem, 2.4vw, 1.6rem);
+          font-size: clamp(0.7rem, 1.7vw, 1rem);
         }
-        #brand-name {
-          font-size: 0.9rem;
+        #b-name {
+          font-size: 0.88rem;
         }
-        .ctrl-btn {
+        .cb {
           padding: 11px 22px;
           font-size: 0.82rem;
         }
-        #btn-play {
-          width: 64px;
-          height: 64px;
-        }
       }
-
-      /* ═══════════════════════════════════════════════════════════
-   RESPONSIVE — DESKTOP (≥ 1024px)
-═══════════════════════════════════════════════════════════ */
+      /* Desktop */
       @media (min-width: 1024px) {
         :root {
-          --ring-size: clamp(260px, 28vmin, 310px);
-        }
-
-        #main {
-          gap: clamp(28px, 5vmin, 50px);
+          --ring: clamp(98px, 10vmin, 120px);
         }
         #mantra-text {
-          font-size: clamp(1.2rem, 1.9vw, 1.75rem);
-        }
-        #brand-name {
-          font-size: 0.95rem;
+          font-size: clamp(0.78rem, 1.4vw, 1.05rem);
         }
       }
-
-      /* ═══════════════════════════════════════════════════════════
-   RESPONSIVE — LARGE DESKTOP (≥ 1440px)
-═══════════════════════════════════════════════════════════ */
+      /* Large desktop */
       @media (min-width: 1440px) {
         :root {
-          --ring-size: 320px;
+          --ring: 122px;
         }
-
         #mantra-text {
-          font-size: 1.8rem;
+          font-size: 1.1rem;
         }
-        #mantra-card {
-          padding: 34px 72px;
+        #mantra-pill {
+          padding: 13px 62px;
         }
       }
     </style>
   </head>
   <body>
-    <!-- ───── Layer 0: Ambient BG ──────────────────── -->
-    <div id="bg-ambient" aria-hidden="true"></div>
+    <!-- BG layers -->
+    <div id="bg" aria-hidden="true"></div>
     <div id="watermark" aria-hidden="true"></div>
-
-    <!-- ───── Layer 1: Slideshow ──────────────────── -->
     <div id="slideshow" aria-hidden="true"></div>
-    <div id="no-images" role="alert">
+    <div id="no-images">
       <p>
-        No images found in the <strong>NRJD_Pics</strong> folder.<br />
-        Add .jpg or .png images, then reload.
+        No images found in <strong>NRJD_Pics</strong>.<br />Add .jpg or .png
+        images then reload.
       </p>
     </div>
 
-    <!-- ───── Layer 2: App UI ─────────────────────── -->
+    <!-- App UI -->
     <div id="app">
-      <!-- ── Header / Branding ────────────────────── -->
-      <header id="header">
+      <!-- ── TOP BAR ─────────────────────────────────────────── -->
+      <div id="topbar">
+        <!-- Brand left -->
         <div id="brand">
-          <div id="brand-emblem" aria-hidden="true">ॐ</div>
-          <div id="brand-copy">
-            <!--
-          ★ CHANGE THESE TO YOUR ORGANISATION DETAILS ★
-          brand-name    : Short org name / group name
-          brand-sub     : App title or tagline
-        -->
-            <span id="brand-name">NRJD Satsang</span>
-            <span id="brand-sub">Japa Session Tool</span>
+          <div id="badge" aria-hidden="true">IN</div>
+          <div id="b-copy">
+            <!-- ★ CHANGE org name / subtitle here ★ -->
+            <span id="b-name">ISKCON NRJD</span>
+            <span id="b-sub">Japa Session Tool</span>
           </div>
         </div>
-        <div id="header-actions">
+
+        <!-- Right cluster: icon btns + compact ring timer -->
+        <div id="right-cluster">
           <button
-            class="icon-btn"
-            id="btn-fullscreen"
+            class="ic-btn"
+            id="btn-fs"
             title="Fullscreen (F)"
-            aria-label="Toggle fullscreen"
+            aria-label="Fullscreen"
           >
             ⛶
           </button>
           <button
-            class="icon-btn"
-            id="btn-open-settings"
+            class="ic-btn"
+            id="btn-cfg"
             title="Settings (S)"
-            aria-label="Open settings"
+            aria-label="Settings"
           >
             ⚙
           </button>
-        </div>
-      </header>
 
-      <!-- ── Main Content ──────────────────────────── -->
-      <main id="main">
-        <!-- Timer Ring -->
-        <div
-          id="timer-wrap"
-          role="timer"
-          aria-live="polite"
-          aria-label="Japa timer"
-        >
-          <svg id="timer-svg" viewBox="0 0 100 100" aria-hidden="true">
-            <!-- Decorative outer tick ring -->
-            <circle
-              id="ring-deco"
-              cx="50"
-              cy="50"
-              r="48"
-              stroke-width="0.8"
-              fill="none"
-              stroke="rgba(201,144,26,0.06)"
-              stroke-dasharray="2 6"
-            />
-            <!-- Track -->
-            <circle id="ring-track" cx="50" cy="50" r="44" stroke-width="5" />
-            <!-- Progress fill -->
-            <circle
-              id="ring-fill"
-              cx="50"
-              cy="50"
-              r="44"
-              stroke-width="5"
-              stroke-dasharray="276.46"
-              stroke-dashoffset="0"
-            />
-          </svg>
-          <div id="timer-center">
-            <div id="timer-display">3:00</div>
-            <div id="timer-label">remaining</div>
-            <div id="timer-duration-hint"></div>
+          <div
+            id="ring-wrap"
+            role="timer"
+            aria-live="polite"
+            aria-label="Japa timer"
+          >
+            <svg id="ring-svg" viewBox="0 0 80 80" aria-hidden="true">
+              <!-- background circle fill -->
+              <circle
+                cx="40"
+                cy="40"
+                r="38"
+                fill="var(--glass-deep)"
+                stroke="var(--glass-border)"
+                stroke-width="1"
+              />
+              <!-- track -->
+              <circle
+                id="rtrack"
+                cx="40"
+                cy="40"
+                r="34"
+                fill="none"
+                stroke="rgba(180,100,20,0.13)"
+                stroke-width="5"
+              />
+              <!-- progress -->
+              <circle
+                id="rfill"
+                cx="40"
+                cy="40"
+                r="34"
+                fill="none"
+                stroke="var(--saffron)"
+                stroke-width="5"
+                stroke-linecap="round"
+                stroke-dasharray="213.63"
+                stroke-dashoffset="0"
+              />
+            </svg>
+            <div id="ring-center">
+              <div id="t-disp">3:00</div>
+              <div id="t-lbl">remain</div>
+            </div>
           </div>
         </div>
+      </div>
 
-        <!-- Mantra -->
-        <div id="mantra-card" aria-label="Hare Krishna Maha Mantra">
-          <p id="mantra-text" aria-live="off">
-            <span class="m-line">
-              <span class="m-gold">HARE</span> KRISHNA
-              <span class="m-gold">HARE</span> KRISHNA
+      <!-- ── MANTRA PILL ──────────────────────────────────────── -->
+      <div id="mantra-row">
+        <div id="mantra-pill">
+          <!--
+        Marquee trick: two identical copies side by side.
+        Animation slides left by 50% (= 1 copy width) then snaps back — seamless.
+      -->
+          <div
+            id="mantra-track"
+            aria-label="Hare Krishna Maha Mantra"
+            role="marquee"
+          >
+            <!-- Copy A -->
+            <span class="m-copy">
+              <span class="mhi">HARE</span>&nbsp;KRISHNA
+              <span class="msep">✦</span>
+              <span class="mhi">HARE</span>&nbsp;KRISHNA
+              <span class="msep">✦</span>
+              KRISHNA&nbsp;KRISHNA
+              <span class="msep">✦</span>
+              <span class="mhi">HARE</span>&nbsp;<span class="mhi">HARE</span>
+              <span class="msep">✦</span>
+              <span class="mhi">HARE</span>&nbsp;RAMA
+              <span class="msep">✦</span>
+              <span class="mhi">HARE</span>&nbsp;RAMA
+              <span class="msep">✦</span>
+              RAMA&nbsp;RAMA
+              <span class="msep">✦</span>
+              <span class="mhi">HARE</span>&nbsp;<span class="mhi">HARE</span>
             </span>
-            <span class="m-line">
-              KRISHNA KRISHNA
-              <span class="m-gold">HARE</span>
-              <span class="m-gold">HARE</span>
+
+            <!-- Copy B — identical, creates seamless loop -->
+            <span class="m-copy" aria-hidden="true">
+              <span class="mhi">HARE</span>&nbsp;KRISHNA
+              <span class="msep">✦</span>
+              <span class="mhi">HARE</span>&nbsp;KRISHNA
+              <span class="msep">✦</span>
+              KRISHNA&nbsp;KRISHNA
+              <span class="msep">✦</span>
+              <span class="mhi">HARE</span>&nbsp;<span class="mhi">HARE</span>
+              <span class="msep">✦</span>
+              <span class="mhi">HARE</span>&nbsp;RAMA
+              <span class="msep">✦</span>
+              <span class="mhi">HARE</span>&nbsp;RAMA
+              <span class="msep">✦</span>
+              RAMA&nbsp;RAMA
+              <span class="msep">✦</span>
+              <span class="mhi">HARE</span>&nbsp;<span class="mhi">HARE</span>
             </span>
-            <span class="m-line">
-              <span class="m-gold">HARE</span> RAMA
-              <span class="m-gold">HARE</span> RAMA
-            </span>
-            <span class="m-line">
-              RAMA RAMA
-              <span class="m-gold">HARE</span>
-              <span class="m-gold">HARE</span>
-            </span>
-          </p>
+          </div>
         </div>
-      </main>
+      </div>
 
-      <!-- ── Footer / Controls ─────────────────────── -->
-      <footer id="footer" aria-label="Timer controls">
-        <div class="ctrl-pill">
-          <button class="ctrl-btn" id="btn-reset" aria-label="Reset timer (R)">
+      <!-- (image shows through the empty middle row) -->
+
+      <!-- ── BOTTOM CONTROLS ─────────────────────────────────── -->
+      <div id="ctrls">
+        <!-- Main control pill -->
+        <div class="pill">
+          <button class="cb" id="btn-reset" aria-label="Reset (R)">
             ↺ Reset
           </button>
-          <button id="btn-play" aria-label="Start or pause timer (Space)">
-            ▶
-          </button>
+          <button id="btn-play" aria-label="Start / Pause (Space)">▶</button>
           <button
-            class="ctrl-btn accent"
+            class="cb next"
             id="btn-next"
-            aria-label="Next participant — bell and reset (N)"
+            aria-label="Next participant (N)"
           >
             🔔 Next
           </button>
         </div>
-        <button
-          class="icon-btn"
-          id="btn-hide-controls"
-          title="Hide controls (H)"
-          aria-label="Hide controls"
-          style="pointer-events: auto"
-        >
-          ▼
+        <!-- Standalone settings pill -->
+        <button class="pill-solo" id="btn-settings" aria-label="Settings (S)">
+          ⚙ Settings
         </button>
-      </footer>
+      </div>
     </div>
+    <!-- #app -->
 
-    <!-- ───── Show-controls FAB (visible when footer hidden) ── -->
-    <button id="btn-show-controls" aria-label="Show controls">▲</button>
+    <!-- Settings bottom sheet -->
+    <div id="s-overlay" role="dialog" aria-modal="true" aria-label="Settings">
+      <div id="s-panel">
+        <div id="s-handle"><span></span></div>
 
-    <!-- ───── Settings Bottom Sheet ──────────────────────────── -->
-    <div
-      id="settings-overlay"
-      role="dialog"
-      aria-modal="true"
-      aria-label="Settings"
-    >
-      <div id="settings-panel">
-        <div id="settings-handle"><span></span></div>
-
-        <div id="settings-header">
-          <span id="settings-title">⚙ Session Settings</span>
-          <button id="btn-settings-close" aria-label="Close settings">✕</button>
+        <div id="s-hdr">
+          <span id="s-title">⚙ Session Settings</span>
+          <button id="btn-sc" aria-label="Close settings">✕</button>
         </div>
 
-        <!-- Timer Duration -->
-        <div class="s-section">
-          <div class="s-label">Timer Duration</div>
-          <div class="chip-grid" id="duration-chips"></div>
-          <div class="custom-row">
-            <label for="c-min">Custom</label>
-            <div class="time-input-group">
+        <!-- Duration -->
+        <div class="s-sec">
+          <div class="s-lbl">Timer Duration</div>
+          <div class="chips" id="dur-chips"></div>
+          <div class="cust-row">
+            <label for="c-m">Custom</label>
+            <div class="t-grp">
               <input
-                class="t-input"
+                class="t-in"
                 type="number"
-                id="c-min"
+                id="c-m"
                 min="0"
                 max="99"
                 value="3"
@@ -1386,101 +1292,91 @@
               />
               <span class="t-sep">:</span>
               <input
-                class="t-input"
+                class="t-in"
                 type="number"
-                id="c-sec"
+                id="c-s"
                 min="0"
                 max="59"
                 value="0"
                 aria-label="Seconds"
               />
             </div>
-            <button class="apply-btn" id="btn-apply-custom">Apply</button>
+            <button class="apply-btn" id="btn-apply">Apply</button>
           </div>
         </div>
 
-        <!-- Slide Interval -->
-        <div class="s-section">
-          <div class="s-label">Slide Change Interval</div>
-          <div class="chip-grid" id="slide-chips"></div>
+        <!-- Slide interval -->
+        <div class="s-sec">
+          <div class="s-lbl">Slide Change Interval</div>
+          <div class="chips" id="slide-chips"></div>
         </div>
 
         <!-- Options -->
-        <div class="s-section">
-          <div class="s-label">Options</div>
-          <div class="toggle-row">
-            <div class="toggle-text">
-              <span class="toggle-name">Auto-restart after bell</span>
-              <span class="toggle-desc"
-                >Timer auto-resets and continues after completion</span
+        <div class="s-sec">
+          <div class="s-lbl">Options</div>
+          <div class="trow">
+            <div class="tr-txt">
+              <span class="tr-name">Auto-restart after bell</span>
+              <span class="tr-desc"
+                >Timer resets and restarts automatically on completion</span
               >
             </div>
-            <label class="sw" aria-label="Auto-restart">
-              <input type="checkbox" id="opt-auto-restart" checked />
-              <span class="sw-track"></span>
-            </label>
+            <label class="sw"
+              ><input type="checkbox" id="opt-auto" checked /><span
+                class="sw-t"
+              ></span
+            ></label>
           </div>
-          <div class="toggle-row">
-            <div class="toggle-text">
-              <span class="toggle-name">Temple bell sound</span>
-              <span class="toggle-desc"
-                >Play bell on timer completion and Next</span
-              >
+          <div class="trow">
+            <div class="tr-txt">
+              <span class="tr-name">Temple bell sound</span>
+              <span class="tr-desc">Ring 3× on completion and on Next</span>
             </div>
-            <label class="sw" aria-label="Bell sound">
-              <input type="checkbox" id="opt-bell" checked />
-              <span class="sw-track"></span>
-            </label>
+            <label class="sw"
+              ><input type="checkbox" id="opt-bell" checked /><span
+                class="sw-t"
+              ></span
+            ></label>
           </div>
-          <div class="toggle-row">
-            <div class="toggle-text">
-              <span class="toggle-name">Warning indicator</span>
-              <span class="toggle-desc"
-                >Color change at 30 s and 20% time remaining</span
-              >
+          <div class="trow">
+            <div class="tr-txt">
+              <span class="tr-name">Warning colour</span>
+              <span class="tr-desc">Amber at 30 s, red at 10 s remaining</span>
             </div>
-            <label class="sw" aria-label="Warning indicator">
-              <input type="checkbox" id="opt-warning" checked />
-              <span class="sw-track"></span>
-            </label>
+            <label class="sw"
+              ><input type="checkbox" id="opt-warn" checked /><span
+                class="sw-t"
+              ></span
+            ></label>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- ═══════════════════════════════════════════════════════
-     SCRIPTS
-═══════════════════════════════════════════════════════ -->
     <script>
       "use strict";
 
-      /* ─────────────────────────────────────────────────────────
-   CONSTANTS
-───────────────────────────────────────────────────────── */
-      const DURATION_PRESETS = [
-        { label: "1 min", s: 60 },
-        { label: "2 min", s: 120 },
-        { label: "3 min", s: 180 },
-        { label: "5 min", s: 300 },
-        { label: "10 min", s: 600 },
-        { label: "15 min", s: 900 },
-        { label: "20 min", s: 1200 },
-        { label: "30 min", s: 1800 },
+      /* ── Constants ──────────────────────────────────────── */
+      const DUR_P = [
+        { l: "1 min", s: 60 },
+        { l: "2 min", s: 120 },
+        { l: "3 min", s: 180 },
+        { l: "5 min", s: 300 },
+        { l: "10 min", s: 600 },
+        { l: "15 min", s: 900 },
+        { l: "20 min", s: 1200 },
+        { l: "30 min", s: 1800 },
       ];
-
-      const SLIDE_PRESETS = [
-        { label: "5 s", ms: 5000 },
-        { label: "10 s", ms: 10000 },
-        { label: "15 s", ms: 15000 },
-        { label: "20 s", ms: 20000 },
-        { label: "30 s", ms: 30000 },
+      const SLIDE_P = [
+        { l: "5 s", ms: 5000 },
+        { l: "10 s", ms: 10000 },
+        { l: "15 s", ms: 15000 },
+        { l: "20 s", ms: 20000 },
+        { l: "30 s", ms: 30000 },
       ];
+      const RC = 213.63; // 2π × 34
 
-      const RING_C = 276.46; // 2π × 44
-
-      /* ─────────────────────────────────────────────────────────
-   SETTINGS — PERSIST TO LOCALSTORAGE
-───────────────────────────────────────────────────────── */
+      /* ── Config ─────────────────────────────────────────── */
       const DEF = {
         duration: 180,
         slideMs: 10000,
@@ -1488,387 +1384,297 @@
         bellOn: true,
         warnOn: true,
       };
-
-      function loadSettings() {
+      function load() {
         try {
           return Object.assign(
             {},
             DEF,
-            JSON.parse(localStorage.getItem("japa_prefs") || "{}")
+            JSON.parse(localStorage.getItem("japa_cfg") || "{}")
           );
         } catch {
           return Object.assign({}, DEF);
         }
       }
-
-      function saveSettings() {
+      function save() {
         try {
-          localStorage.setItem("japa_prefs", JSON.stringify(cfg));
+          localStorage.setItem("japa_cfg", JSON.stringify(cfg));
         } catch {}
       }
+      const cfg = load();
 
-      const cfg = loadSettings();
+      /* ── State ──────────────────────────────────────────── */
+      let total = cfg.duration,
+        left = cfg.duration,
+        running = false,
+        tick = null,
+        bellPend = false;
 
-      /* ─────────────────────────────────────────────────────────
-   TIMER STATE
-───────────────────────────────────────────────────────── */
-      let totalSec = cfg.duration;
-      let timeLeft = cfg.duration;
-      let running = false;
-      let ticker = null;
-      let bellPending = false; // prevents double-trigger
-
-      /* ─────────────────────────────────────────────────────────
-   DOM REFERENCES
-───────────────────────────────────────────────────────── */
+      /* ── DOM ────────────────────────────────────────────── */
       const $ = (id) => document.getElementById(id);
+      const elDisp = $("t-disp"),
+        elLbl = $("t-lbl"),
+        elFill = $("rfill");
+      const elPlay = $("btn-play"),
+        elReset = $("btn-reset"),
+        elNext = $("btn-next");
+      const elOver = $("s-overlay");
 
-      const elTimerDisplay = $("timer-display");
-      const elTimerLabel = $("timer-label");
-      const elDurationHint = $("timer-duration-hint");
-      const elRingFill = $("ring-fill");
-      const elBtnPlay = $("btn-play");
-      const elBtnReset = $("btn-reset");
-      const elBtnNext = $("btn-next");
-      const elFooter = $("footer");
-      const elShowFab = $("btn-show-controls");
-      const elOverlay = $("settings-overlay");
-
-      /* ─────────────────────────────────────────────────────────
-   AUDIO — TEMPLE BELL
-───────────────────────────────────────────────────────── */
-      let actx = null;
-      let bellClip = null;
-
-      function primeAudio() {
+      /* ── Audio ──────────────────────────────────────────── */
+      let actx = null,
+        clip = null;
+      function primeA() {
         if (!actx)
           actx = new (window.AudioContext || window.webkitAudioContext)();
         if (actx.state === "suspended") actx.resume();
       }
-
       async function loadBell() {
         try {
-          primeAudio();
+          primeA();
           const r = await fetch("Temple_Bell_Sound.mp3");
           if (!r.ok) return;
           const full = await actx.decodeAudioData(await r.arrayBuffer());
-          const clipLen = Math.min(
-            Math.floor(1.5 * full.sampleRate),
-            full.length
-          );
-          bellClip = actx.createBuffer(
-            full.numberOfChannels,
-            clipLen,
-            full.sampleRate
-          );
-          for (let ch = 0; ch < full.numberOfChannels; ch++) {
-            bellClip
-              .getChannelData(ch)
-              .set(full.getChannelData(ch).subarray(0, clipLen));
-          }
+          const len = Math.min(Math.floor(1.5 * full.sampleRate), full.length);
+          clip = actx.createBuffer(full.numberOfChannels, len, full.sampleRate);
+          for (let c = 0; c < full.numberOfChannels; c++)
+            clip.getChannelData(c).set(full.getChannelData(c).subarray(0, len));
         } catch (e) {
-          console.warn("Bell not loaded:", e);
+          console.warn("Bell:", e);
         }
       }
-
-      function strikeBell(when) {
-        if (!bellClip || !actx) return;
-        const src = actx.createBufferSource();
-        src.buffer = bellClip;
-        src.connect(actx.destination);
-        src.start(when);
+      function strike(t) {
+        if (!clip || !actx) return;
+        const s = actx.createBufferSource();
+        s.buffer = clip;
+        s.connect(actx.destination);
+        s.start(t);
       }
-
       function ringBell() {
         if (!cfg.bellOn) return;
-        primeAudio();
-        const now = actx.currentTime;
-        strikeBell(now);
-        strikeBell(now + 1.5);
-        strikeBell(now + 3.0);
+        primeA();
+        const n = actx.currentTime;
+        strike(n);
+        strike(n + 1.5);
+        strike(n + 3.0);
       }
 
-      /* ─────────────────────────────────────────────────────────
-   SLIDESHOW
-───────────────────────────────────────────────────────── */
-      let images = [];
-      let imgIdx = 0;
-      let slideJob = null;
-
-      async function loadImages() {
-        // Try dev API first, then bundled JSON (APK / offline)
-        for (const url of ["/api/images", "image-list.json"]) {
+      /* ── Slideshow ──────────────────────────────────────── */
+      let imgs = [],
+        iIdx = 0,
+        sJob = null;
+      async function loadImgs() {
+        for (const u of ["/api/images", "image-list.json"]) {
           try {
-            const r = await fetch(url);
+            const r = await fetch(u);
             if (!r.ok) continue;
-            const data = await r.json();
-            if (Array.isArray(data) && data.length) {
-              images = data;
+            const d = await r.json();
+            if (Array.isArray(d) && d.length) {
+              imgs = d;
               break;
             }
           } catch {}
         }
-
-        if (!images.length) {
+        if (!imgs.length) {
           $("no-images").classList.add("show");
           return;
         }
-
         const ss = $("slideshow");
-        const mkSlide = (id, active) => {
+        const mk = (id, act) => {
           const d = document.createElement("div");
           d.id = id;
-          d.className = "slide" + (active ? " active" : "");
+          d.className = "slide" + (act ? " active" : "");
           return d;
         };
-        const sA = mkSlide("slide-a", true);
-        const sB = mkSlide("slide-b", false);
-        ss.append(sA, sB);
-        sA.style.backgroundImage = imgUrl(images[0]);
-
-        images.forEach((n) => {
+        const A = mk("slide-a", true),
+          B = mk("slide-b", false);
+        ss.append(A, B);
+        A.style.backgroundImage = iu(imgs[0]);
+        imgs.forEach((n) => {
           const i = new Image();
           i.src = `/NRJD_Pics/${encodeURIComponent(n)}`;
         });
-        scheduleSlides();
+        sched();
+      }
+      const iu = (n) => `url("/NRJD_Pics/${encodeURIComponent(n)}")`;
+      function nxtImg() {
+        if (imgs.length <= 1) return;
+        iIdx = (iIdx + 1) % imgs.length;
+        const A = $("slide-a"),
+          B = $("slide-b");
+        if (!A || !B) return;
+        const [nx, pv] = A.classList.contains("active") ? [B, A] : [A, B];
+        nx.style.backgroundImage = iu(imgs[iIdx]);
+        pv.classList.remove("active");
+        nx.classList.add("active");
+      }
+      function sched() {
+        clearInterval(sJob);
+        sJob = setInterval(nxtImg, cfg.slideMs);
       }
 
-      function imgUrl(name) {
-        return `url("/NRJD_Pics/${encodeURIComponent(name)}")`;
-      }
+      /* ── Timer ──────────────────────────────────────────── */
+      const fmt = (s) =>
+        `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
 
-      function advanceSlide() {
-        if (images.length <= 1) return;
-        imgIdx = (imgIdx + 1) % images.length;
-        const a = $("slide-a"),
-          b = $("slide-b");
-        if (!a || !b) return;
-        const [next, prev] = a.classList.contains("active") ? [b, a] : [a, b];
-        next.style.backgroundImage = imgUrl(images[imgIdx]);
-        prev.classList.remove("active");
-        next.classList.add("active");
-      }
+      function ui() {
+        elDisp.textContent = fmt(left);
+        elPlay.textContent = running ? "⏸" : "▶";
+        elPlay.disabled = left === 0 && !running;
+        elReset.disabled = left === total && !running;
 
-      function scheduleSlides() {
-        clearInterval(slideJob);
-        slideJob = setInterval(advanceSlide, cfg.slideMs);
-      }
-
-      /* ─────────────────────────────────────────────────────────
-   TIMER LOGIC
-───────────────────────────────────────────────────────── */
-      function fmt(s) {
-        return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
-      }
-
-      function updateUI() {
-        elTimerDisplay.textContent = fmt(timeLeft);
-        elDurationHint.textContent = `/ ${fmt(totalSec)}`;
-
-        // Ring progress (drains from full to empty)
-        const pct = totalSec > 0 ? timeLeft / totalSec : 0;
-        elRingFill.style.strokeDashoffset = String(RING_C * (1 - pct));
+        // Ring fill (drains from full → empty)
+        const pct = total > 0 ? left / total : 0;
+        elFill.style.strokeDashoffset = String(RC * (1 - pct));
 
         // State classes
-        const states = ["state-warning", "state-danger"];
-        elTimerDisplay.classList.remove(...states);
-        elRingFill.classList.remove(...states);
-
-        if (timeLeft === 0) {
-          elTimerDisplay.classList.add("state-danger");
-          elRingFill.classList.add("state-danger");
-          elTimerLabel.textContent = "complete";
-        } else if (cfg.warnOn && timeLeft <= 10) {
-          elTimerDisplay.classList.add("state-danger");
-          elRingFill.classList.add("state-danger");
-          elTimerLabel.textContent = "remaining";
-        } else if (
-          cfg.warnOn &&
-          (timeLeft <= 30 || timeLeft <= totalSec * 0.18)
-        ) {
-          elTimerDisplay.classList.add("state-warning");
-          elRingFill.classList.add("state-warning");
-          elTimerLabel.textContent = "remaining";
+        elDisp.classList.remove("warn", "danger");
+        elFill.classList.remove("warn", "danger");
+        if (left === 0) {
+          elDisp.classList.add("danger");
+          elFill.classList.add("danger");
+          elLbl.textContent = "done";
+        } else if (cfg.warnOn && left <= 10) {
+          elDisp.classList.add("danger");
+          elFill.classList.add("danger");
+          elLbl.textContent = "remain";
+        } else if (cfg.warnOn && (left <= 30 || left <= total * 0.18)) {
+          elDisp.classList.add("warn");
+          elFill.classList.add("warn");
+          elLbl.textContent = "remain";
         } else {
-          elTimerLabel.textContent = "remaining";
+          elLbl.textContent = "remain";
         }
-
-        elBtnPlay.textContent = running ? "⏸" : "▶";
-        elBtnPlay.disabled = timeLeft === 0 && !running;
-        elBtnReset.disabled = timeLeft === totalSec && !running;
       }
 
-      function startTimer() {
-        if (running || timeLeft <= 0) return;
-        primeAudio();
+      function start() {
+        if (running || left <= 0) return;
+        primeA();
         running = true;
-        updateUI();
-        ticker = setInterval(() => {
-          timeLeft = Math.max(0, timeLeft - 1);
-          updateUI();
-          if (timeLeft === 0 && !bellPending) {
-            bellPending = true;
-            stopTicker();
+        ui();
+        tick = setInterval(() => {
+          left = Math.max(0, left - 1);
+          ui();
+          if (left === 0 && !bellPend) {
+            bellPend = true;
+            stopTick();
             ringBell();
-            animateBellBtn();
-            if (cfg.autoRestart) {
+            animBell();
+            if (cfg.autoRestart)
               setTimeout(() => {
-                bellPending = false;
-                timeLeft = totalSec;
-                updateUI();
-                startTimer();
+                bellPend = false;
+                left = total;
+                ui();
+                start();
               }, 5600);
-            } else {
-              bellPending = false;
-            }
+            else bellPend = false;
           }
         }, 1000);
       }
-
-      function pauseTimer() {
+      function pause() {
         if (!running) return;
-        stopTicker();
-        updateUI();
+        stopTick();
+        ui();
       }
-
-      function stopTicker() {
+      function stopTick() {
         running = false;
-        clearInterval(ticker);
-        ticker = null;
+        clearInterval(tick);
+        tick = null;
       }
-
-      function resetTimer(newDur) {
-        stopTicker();
-        if (typeof newDur === "number") {
-          totalSec = newDur;
-          cfg.duration = newDur;
+      function reset(nd) {
+        stopTick();
+        if (typeof nd === "number") {
+          total = nd;
+          cfg.duration = nd;
         }
-        timeLeft = totalSec;
-        bellPending = false;
-        updateUI();
+        left = total;
+        bellPend = false;
+        ui();
       }
-
-      function toggleTimer() {
-        running ? pauseTimer() : startTimer();
+      function toggle() {
+        running ? pause() : start();
       }
-
-      function nextParticipant() {
-        primeAudio();
+      function nxtPart() {
+        primeA();
         ringBell();
-        animateBellBtn();
-        stopTicker();
-        bellPending = false;
-        timeLeft = totalSec;
+        animBell();
+        stopTick();
+        bellPend = false;
+        left = total;
         running = false;
-        updateUI();
+        ui();
       }
-
-      function animateBellBtn() {
-        elBtnNext.querySelector(".bell-inner")?.remove();
-        const s = document.createElement("span");
-        s.className = "bell-ringing bell-inner";
-        s.textContent = "🔔";
-        elBtnNext.textContent = " Next";
-        elBtnNext.prepend(s);
+      function animBell() {
+        elNext.innerHTML = "";
+        const sp = document.createElement("span");
+        sp.className = "ringing";
+        sp.textContent = "🔔";
+        elNext.append(sp, " Next");
         setTimeout(() => {
-          s.remove();
-          elBtnNext.textContent = "🔔 Next";
-        }, 2000);
+          elNext.textContent = "🔔 Next";
+        }, 1800);
       }
 
-      /* ─────────────────────────────────────────────────────────
-   FULLSCREEN
-───────────────────────────────────────────────────────── */
-      function toggleFullscreen() {
-        if (!document.fullscreenElement) {
-          document.documentElement.requestFullscreen().catch(() => {});
-        } else {
-          document.exitFullscreen().catch(() => {});
-        }
+      /* ── Fullscreen ─────────────────────────────────────── */
+      function toggleFS() {
+        !document.fullscreenElement
+          ? document.documentElement.requestFullscreen().catch(() => {})
+          : document.exitFullscreen().catch(() => {});
       }
 
-      /* ─────────────────────────────────────────────────────────
-   CONTROLS VISIBILITY
-───────────────────────────────────────────────────────── */
-      let ctrlVisible = true;
-
-      function hideControls() {
-        ctrlVisible = false;
-        elFooter.classList.add("hidden");
-        elShowFab.classList.add("visible");
+      /* ── Settings ───────────────────────────────────────── */
+      function openS() {
+        $("c-m").value = Math.floor(cfg.duration / 60);
+        $("c-s").value = cfg.duration % 60;
+        elOver.classList.add("open");
+      }
+      function closeS() {
+        elOver.classList.remove("open");
       }
 
-      function showControls() {
-        ctrlVisible = true;
-        elFooter.classList.remove("hidden");
-        elShowFab.classList.remove("visible");
-      }
-
-      /* ─────────────────────────────────────────────────────────
-   SETTINGS PANEL
-───────────────────────────────────────────────────────── */
-      function openSettings() {
-        // Sync custom inputs to current duration
-        $("c-min").value = Math.floor(cfg.duration / 60);
-        $("c-sec").value = cfg.duration % 60;
-        elOverlay.classList.add("open");
-      }
-
-      function closeSettings() {
-        elOverlay.classList.remove("open");
-      }
-
-      function buildChips(containerId, presets, activeKey, onClick) {
-        const container = $(containerId);
+      function buildChips(cid, presets, key, cb) {
+        const el = $(cid);
         presets.forEach((p) => {
+          const v = p.s ?? p.ms;
           const btn = document.createElement("button");
-          btn.className = "chip";
-          btn.textContent = p.label;
-          btn.dataset.val = p.s ?? p.ms;
-          if ((p.s ?? p.ms) === cfg[activeKey]) btn.classList.add("active");
+          btn.className = "chip" + (v === cfg[key] ? " on" : "");
+          btn.textContent = p.l;
+          btn.dataset.v = v;
           btn.addEventListener("click", () => {
-            container
-              .querySelectorAll(".chip")
-              .forEach((c) => c.classList.remove("active"));
-            btn.classList.add("active");
-            onClick(p.s ?? p.ms);
+            el.querySelectorAll(".chip").forEach((c) =>
+              c.classList.remove("on")
+            );
+            btn.classList.add("on");
+            cb(v);
           });
-          container.appendChild(btn);
+          el.appendChild(btn);
         });
       }
-
-      function syncChipActive(containerId, val) {
+      function syncChips(cid, val) {
         document
-          .querySelectorAll(`#${containerId} .chip`)
-          .forEach((c) =>
-            c.classList.toggle("active", parseInt(c.dataset.val) === val)
-          );
+          .querySelectorAll(`#${cid} .chip`)
+          .forEach((c) => c.classList.toggle("on", +c.dataset.v === val));
       }
 
-      /* ─────────────────────────────────────────────────────────
-   PARTICLES
-───────────────────────────────────────────────────────── */
-      function spawnParticles() {
-        for (let i = 0; i < 14; i++) {
+      /* ── Particles ──────────────────────────────────────── */
+      function particles() {
+        for (let i = 0; i < 12; i++) {
           const p = document.createElement("div");
-          p.className = "particle";
-          const sz = Math.random() * 4 + 1.5;
-          p.style.cssText = `
-      width:${sz}px; height:${sz}px;
-      left:${Math.random() * 100}vw;
-      bottom:${Math.random() * 25}vh;
-      --dur:${(Math.random() * 14 + 8).toFixed(1)}s;
-      --del:${(Math.random() * 8).toFixed(1)}s;
-      --drift:${((Math.random() - 0.5) * 120).toFixed(0)}px;
-    `;
+          p.className = "ptc";
+          const sz = (Math.random() * 4 + 1.5).toFixed(1);
+          p.style.cssText = `width:${sz}px;height:${sz}px;left:${(
+            Math.random() * 100
+          ).toFixed(1)}vw;bottom:${(Math.random() * 20).toFixed(1)}vh;--d:${(
+            Math.random() * 14 +
+            9
+          ).toFixed(1)}s;--dl:${(Math.random() * 8).toFixed(1)}s;--dx:${(
+            (Math.random() - 0.5) *
+            100
+          ).toFixed(0)}px;`;
           document.body.appendChild(p);
         }
       }
 
-      /* ─────────────────────────────────────────────────────────
-   WATERMARK
-───────────────────────────────────────────────────────── */
-      function buildWatermark() {
+      /* ── Watermark ──────────────────────────────────────── */
+      function watermark() {
         const wm = $("watermark");
         const lines = [
           "HARE KRISHNA HARE KRISHNA",
@@ -1876,133 +1682,110 @@
           "HARE RAMA HARE RAMA",
           "RAMA RAMA HARE HARE",
         ];
-        for (let i = 0; i < 64; i++) {
+        for (let i = 0; i < 60; i++) {
           const s = document.createElement("span");
-          s.textContent = lines[i % lines.length];
+          s.textContent = lines[i % 4];
           wm.appendChild(s);
         }
       }
 
-      /* ─────────────────────────────────────────────────────────
-   EVENT WIRING
-───────────────────────────────────────────────────────── */
-      elBtnPlay.addEventListener("click", toggleTimer);
-      elBtnReset.addEventListener("click", () => resetTimer());
-      elBtnNext.addEventListener("click", nextParticipant);
-      $("btn-fullscreen").addEventListener("click", toggleFullscreen);
-      $("btn-open-settings").addEventListener("click", openSettings);
-      $("btn-hide-controls").addEventListener("click", hideControls);
-      elShowFab.addEventListener("click", showControls);
-      $("btn-settings-close").addEventListener("click", closeSettings);
-
-      // Close settings on overlay backdrop click
-      elOverlay.addEventListener("click", (e) => {
-        if (e.target === elOverlay) closeSettings();
+      /* ── Wire events ────────────────────────────────────── */
+      elPlay.addEventListener("click", toggle);
+      elReset.addEventListener("click", () => reset());
+      elNext.addEventListener("click", nxtPart);
+      $("btn-fs").addEventListener("click", toggleFS);
+      $("btn-cfg").addEventListener("click", openS);
+      $("btn-settings").addEventListener("click", openS);
+      $("btn-sc").addEventListener("click", closeS);
+      elOver.addEventListener("click", (e) => {
+        if (e.target === elOver) closeS();
       });
 
-      // Duration chips
-      buildChips("duration-chips", DURATION_PRESETS, "duration", (newDur) => {
-        cfg.duration = newDur;
-        saveSettings();
-        resetTimer(newDur);
-        $("c-min").value = Math.floor(newDur / 60);
-        $("c-sec").value = newDur % 60;
+      buildChips("dur-chips", DUR_P, "duration", (nd) => {
+        cfg.duration = nd;
+        save();
+        reset(nd);
+        $("c-m").value = Math.floor(nd / 60);
+        $("c-s").value = nd % 60;
+      });
+      buildChips("slide-chips", SLIDE_P, "slideMs", (nm) => {
+        cfg.slideMs = nm;
+        save();
+        sched();
       });
 
-      // Slide interval chips
-      buildChips("slide-chips", SLIDE_PRESETS, "slideMs", (newMs) => {
-        cfg.slideMs = newMs;
-        saveSettings();
-        scheduleSlides();
-      });
-
-      // Custom time apply
-      $("btn-apply-custom").addEventListener("click", () => {
-        const m = Math.max(0, Math.min(99, parseInt($("c-min").value) || 0));
-        const s = Math.max(0, Math.min(59, parseInt($("c-sec").value) || 0));
-        const tot = m * 60 + s;
-        if (tot < 1) {
-          $("c-min").focus();
+      $("btn-apply").addEventListener("click", () => {
+        const m = Math.max(0, Math.min(99, +$("c-m").value || 0));
+        const s = Math.max(0, Math.min(59, +$("c-s").value || 0));
+        const t = m * 60 + s;
+        if (t < 1) {
+          $("c-m").focus();
           return;
         }
-        cfg.duration = tot;
-        saveSettings();
-        resetTimer(tot);
-        syncChipActive("duration-chips", tot);
+        cfg.duration = t;
+        save();
+        reset(t);
+        syncChips("dur-chips", t);
+      });
+      $("c-m").addEventListener("input", function () {
+        this.value = Math.min(99, Math.max(0, +this.value || 0));
+      });
+      $("c-s").addEventListener("input", function () {
+        this.value = Math.min(59, Math.max(0, +this.value || 0));
       });
 
-      // Clamp numeric inputs
-      $("c-min").addEventListener("input", function () {
-        this.value = Math.min(99, Math.max(0, parseInt(this.value) || 0));
-      });
-      $("c-sec").addEventListener("input", function () {
-        this.value = Math.min(59, Math.max(0, parseInt(this.value) || 0));
-      });
-
-      // Option toggles
-      const TOGGLE_MAP = {
-        "opt-auto-restart": "autoRestart",
-        "opt-bell": "bellOn",
-        "opt-warning": "warnOn",
-      };
-      Object.entries(TOGGLE_MAP).forEach(([id, key]) => {
+      [
+        ["opt-auto", "autoRestart"],
+        ["opt-bell", "bellOn"],
+        ["opt-warn", "warnOn"],
+      ].forEach(([id, k]) => {
         const el = $(id);
-        el.checked = cfg[key];
+        el.checked = cfg[k];
         el.addEventListener("change", () => {
-          cfg[key] = el.checked;
-          saveSettings();
-          updateUI();
+          cfg[k] = el.checked;
+          save();
+          ui();
         });
       });
 
-      // Keyboard shortcuts
       document.addEventListener("keydown", (e) => {
         if (["INPUT", "TEXTAREA"].includes(e.target.tagName)) return;
         switch (e.key) {
           case " ":
           case "Enter":
             e.preventDefault();
-            toggleTimer();
+            toggle();
             break;
           case "r":
           case "R":
-            resetTimer();
+            reset();
             break;
           case "n":
           case "N":
-            nextParticipant();
+            nxtPart();
             break;
           case "f":
           case "F":
-            toggleFullscreen();
-            break;
-          case "h":
-          case "H":
-            ctrlVisible ? hideControls() : showControls();
+            toggleFS();
             break;
           case "s":
           case "S":
-            openSettings();
+            openS();
             break;
           case "Escape":
-            closeSettings();
+            closeS();
             break;
         }
       });
 
-      /* ─────────────────────────────────────────────────────────
-   INIT
-───────────────────────────────────────────────────────── */
-      buildWatermark();
-      spawnParticles();
-      updateUI();
-      loadImages();
+      /* ── Init ────────────────────────────────────────────── */
+      watermark();
+      particles();
+      ui();
+      loadImgs();
       loadBell();
-
-      // Service worker registration
-      if ("serviceWorker" in navigator) {
+      if ("serviceWorker" in navigator)
         navigator.serviceWorker.register("sw.js").catch(() => {});
-      }
     </script>
   </body>
 </html>
