@@ -341,20 +341,11 @@
       #badge {
         width: clamp(38px, 8.5vw, 50px);
         height: clamp(38px, 8.5vw, 50px);
-        border-radius: 13px;
-        background: linear-gradient(
-          148deg,
-          var(--saffron) 0%,
-          var(--marigold) 100%
-        );
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-family: var(--f-sacred);
-        font-size: clamp(1.05rem, 2.8vw, 1.5rem);
-        font-weight: 900;
-        color: #fff;
+        object-fit: cover; /* keeps image properly fitted */
+        border-radius: 50%;
         flex-shrink: 0;
+
+        /* optional shadow to keep same look */
         box-shadow: 0 4px 18px rgba(212, 134, 15, 0.4),
           0 1px 4px rgba(0, 0, 0, 0.1);
       }
@@ -1299,7 +1290,7 @@
       <!-- ── TOP BAR ─────────────────────────────────────────── -->
       <div id="topbar">
         <div id="brand">
-          <div id="badge" aria-hidden="true">IN</div>
+          <img id="badge" src="logo.jpeg" alt="Logo" />
           <div id="b-copy">
             <span id="b-name">ISKCON NRJD</span>
             <span id="b-sub">Japa Session Tool</span>
