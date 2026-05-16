@@ -19,14 +19,14 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Nunito:wght@300;400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Nunito:wght@300;400;500;600;700&family=Noto+Serif+Devanagari:wght@600;700&family=Noto+Serif+Kannada:wght@600;700&display=swap"
       rel="stylesheet"
     />
 
     <style>
       /* ══════════════════════════════════════════════════════════════
-   DESIGN TOKENS — warm saffron-cream light palette
-══════════════════════════════════════════════════════════════ */
+         DESIGN TOKENS — warm saffron-cream light palette
+      ══════════════════════════════════════════════════════════════ */
       :root {
         --cream: #fdf6ec;
         --cream-deep: #f5e9d5;
@@ -38,6 +38,7 @@
         --marigold: #f0a830;
         --tulsi: #3d7a52;
         --tulsi-bg: rgba(61, 122, 82, 0.13);
+        --krishna: #6b5dd3;
 
         --ink: #1e1008;
         --ink-mid: #5a3212;
@@ -55,21 +56,23 @@
         --f-sacred: "Cinzel", Georgia, "Times New Roman", serif;
         --f-ui: "Nunito", "Segoe UI", Tahoma, sans-serif;
         --f-mono: "Courier New", Courier, monospace;
+        --f-deva: "Noto Serif Devanagari", "Mangal", serif;
+        --f-knd: "Noto Serif Kannada", "Tunga", serif;
 
         --st: env(safe-area-inset-top, 0px);
         --sb: env(safe-area-inset-bottom, 0px);
         --sl: env(safe-area-inset-left, 0px);
         --sr: env(safe-area-inset-right, 0px);
 
-        /* Ring dimensions — radius 34, circumference 213.63 */
         --ring: clamp(78px, 14vmin, 102px);
         --ring-r: 34;
         --ring-c: 213.63;
 
         --ease: cubic-bezier(0.16, 1, 0.3, 1);
+        --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
       }
 
-      /* ── Reset ────────────────────────────────────────────── */
+      /* ── Reset ───────────────────────────────────────────── */
       *,
       *::before,
       *::after {
@@ -116,8 +119,8 @@
       }
 
       /* ══════════════════════════════════════════════════════════════
-   BACKGROUND — warm layered radial gradient
-══════════════════════════════════════════════════════════════ */
+         BACKGROUND
+      ══════════════════════════════════════════════════════════════ */
       #bg {
         position: fixed;
         inset: 0;
@@ -178,13 +181,14 @@
       }
 
       /* ══════════════════════════════════════════════════════════════
-   SLIDESHOW
-══════════════════════════════════════════════════════════════ */
+         SLIDESHOW — Ken Burns edition
+      ══════════════════════════════════════════════════════════════ */
       #slideshow {
         position: fixed;
         inset: 0;
         z-index: 2;
         pointer-events: none;
+        overflow: hidden;
       }
       .slide {
         position: absolute;
@@ -193,14 +197,61 @@
         background-position: center;
         background-repeat: no-repeat;
         opacity: 0;
-        transition: opacity 2.2s ease-in-out;
-        will-change: opacity;
+        transition: opacity 2.4s ease-in-out;
+        will-change: opacity, transform;
+        transform-origin: center center;
       }
       .slide.active {
         opacity: 1;
       }
 
-      /* Warm light-bleed vignette — blends image into cream bg */
+      /* Ken Burns keyframes — 4 directions for variety */
+      @keyframes kb1 {
+        from {
+          transform: scale(1) translate(0, 0);
+        }
+        to {
+          transform: scale(1.08) translate(-1.5%, -1%);
+        }
+      }
+      @keyframes kb2 {
+        from {
+          transform: scale(1.07) translate(-1.2%, -0.6%);
+        }
+        to {
+          transform: scale(1) translate(0, 0);
+        }
+      }
+      @keyframes kb3 {
+        from {
+          transform: scale(1) translate(0, 0);
+        }
+        to {
+          transform: scale(1.07) translate(1.5%, -0.8%);
+        }
+      }
+      @keyframes kb4 {
+        from {
+          transform: scale(1.06) translate(1.2%, 0.6%);
+        }
+        to {
+          transform: scale(1) translate(-0.8%, -0.4%);
+        }
+      }
+      .slide.active.kb1 {
+        animation: kb1 16s ease-in-out forwards;
+      }
+      .slide.active.kb2 {
+        animation: kb2 16s ease-in-out forwards;
+      }
+      .slide.active.kb3 {
+        animation: kb3 16s ease-in-out forwards;
+      }
+      .slide.active.kb4 {
+        animation: kb4 16s ease-in-out forwards;
+      }
+
+      /* Warm vignette over photos */
       #slideshow::after {
         content: "";
         position: absolute;
@@ -208,8 +259,8 @@
         background: radial-gradient(
           ellipse 82% 76% at 50% 50%,
           rgba(253, 246, 236, 0.06) 0%,
-          rgba(253, 246, 236, 0.3) 55%,
-          rgba(253, 246, 236, 0.78) 100%
+          rgba(253, 246, 236, 0.32) 55%,
+          rgba(253, 246, 236, 0.82) 100%
         );
         pointer-events: none;
       }
@@ -241,8 +292,8 @@
       }
 
       /* ══════════════════════════════════════════════════════════════
-   APP SHELL
-══════════════════════════════════════════════════════════════ */
+         APP SHELL
+      ══════════════════════════════════════════════════════════════ */
       #app {
         position: fixed;
         inset: 0;
@@ -259,8 +310,8 @@
       }
 
       /* ══════════════════════════════════════════════════════════════
-   TOP BAR — brand LEFT | icon-btns + compact ring-timer RIGHT
-══════════════════════════════════════════════════════════════ */
+         TOP BAR
+      ══════════════════════════════════════════════════════════════ */
       #topbar {
         grid-area: topbar;
         display: flex;
@@ -327,13 +378,12 @@
         letter-spacing: 0.06em;
       }
 
-      /* Right cluster — icon buttons + ring timer */
+      /* Right cluster */
       #right-cluster {
         display: flex;
         align-items: center;
         gap: clamp(6px, 1.5vw, 9px);
       }
-
       .ic-btn {
         width: clamp(34px, 7.5vw, 42px);
         height: clamp(34px, 7.5vw, 42px);
@@ -360,7 +410,7 @@
         transform: scale(0.88);
       }
 
-      /* ── RING TIMER (compact, top-right) ─────────────────── */
+      /* Ring timer */
       #ring-wrap {
         position: relative;
         width: var(--ring);
@@ -374,11 +424,6 @@
         height: 100%;
         transform: rotate(-90deg);
         overflow: visible;
-      }
-      #ring-bg {
-        fill: var(--glass-deep);
-        stroke: var(--glass-border);
-        stroke-width: 1;
       }
       circle#rtrack {
         fill: none;
@@ -413,7 +458,6 @@
           opacity: 0.28;
         }
       }
-
       #ring-center {
         position: absolute;
         inset: 0;
@@ -448,8 +492,8 @@
       }
 
       /* ══════════════════════════════════════════════════════════════
-   MANTRA STRIP — slim pill below topbar
-══════════════════════════════════════════════════════════════ */
+         MANTRA PILL — Word-bounce multilingual display
+      ══════════════════════════════════════════════════════════════ */
       #mantra-row {
         grid-area: mantra;
         display: flex;
@@ -457,105 +501,256 @@
         pointer-events: none;
         animation: fadeDown 0.7s var(--ease) 0.14s both;
       }
-      /* ── MANTRA TICKER / MARQUEE ──────────────────────────── */
+
       #mantra-pill {
         position: relative;
         background: var(--glass);
         border: 1px solid var(--glass-border);
-        border-radius: 100px;
-        padding: clamp(9px, 2vw, 13px) 0;
-        backdrop-filter: blur(22px);
-        -webkit-backdrop-filter: blur(22px);
+        border-radius: 20px;
+        padding: clamp(10px, 2.4vw, 16px) clamp(14px, 3.5vw, 22px)
+          clamp(8px, 2vw, 12px);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
         box-shadow: inset 0 1px 0 var(--glass-shine),
-          0 4px 24px rgba(120, 60, 0, 0.1), 0 1px 3px rgba(120, 60, 0, 0.06);
-        width: min(96vw, 700px);
-        overflow: hidden; /* clips the scrolling text at the edges */
+          0 4px 28px rgba(120, 60, 0, 0.11), 0 1px 4px rgba(120, 60, 0, 0.07);
+        width: min(97vw, 720px);
+        overflow: hidden;
       }
 
-      /* Fade edges left and right */
-      #mantra-pill::before,
-      #mantra-pill::after {
-        content: "";
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        width: clamp(28px, 8vw, 56px);
-        z-index: 2;
-        pointer-events: none;
-      }
-      #mantra-pill::before {
-        left: 0;
-        background: linear-gradient(
-          to right,
-          var(--glass) 0%,
-          transparent 100%
-        );
-        border-radius: 100px 0 0 100px;
-      }
-      #mantra-pill::after {
-        right: 0;
-        background: linear-gradient(to left, var(--glass) 0%, transparent 100%);
-        border-radius: 0 100px 100px 0;
-      }
-
-      /* Scrolling track */
-      #mantra-track {
+      /* ── Header row: OM · Language name · pips ─────────── */
+      #m-header {
         display: flex;
         align-items: center;
-        white-space: nowrap;
-        animation: ticker 18s linear infinite;
-        will-change: transform;
+        justify-content: space-between;
+        margin-bottom: clamp(7px, 1.8vw, 12px);
       }
-      #mantra-track:hover {
-        animation-play-state: paused;
+      #m-om {
+        font-family: var(--f-deva);
+        font-size: clamp(1rem, 2.5vw, 1.3rem);
+        color: var(--saffron);
+        opacity: 0.85;
+        line-height: 1;
+        filter: drop-shadow(0 0 8px rgba(224, 120, 32, 0.4));
+      }
+      #lang-name {
+        font-family: var(--f-sacred);
+        font-size: clamp(0.44rem, 1.1vw, 0.62rem);
+        font-weight: 700;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: var(--ink-soft);
+        transition: opacity 0.35s var(--ease), transform 0.35s var(--ease);
+        transform-origin: center;
+        flex: 1;
+        text-align: center;
+      }
+      #lang-name.fading {
+        opacity: 0;
+        transform: scale(0.82) translateY(-4px);
       }
 
-      @keyframes ticker {
-        0% {
-          transform: translateX(0);
-        }
-        100% {
-          transform: translateX(-50%);
-        } /* moves exactly one copy width — seamless loop */
+      #lang-pips {
+        display: flex;
+        gap: 5px;
+        align-items: center;
+      }
+      .lpip {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: rgba(180, 100, 20, 0.18);
+        transition: background 0.35s, box-shadow 0.35s, transform 0.35s;
+      }
+      .lpip.on {
+        background: var(--saffron);
+        box-shadow: 0 0 8px rgba(224, 120, 32, 0.6);
+        transform: scale(1.25);
       }
 
-      /* Each copy of the mantra string */
-      .m-copy {
+      /* ── Word rows ──────────────────────────────────────── */
+      #mantra-words {
+        display: flex;
+        flex-direction: column;
+        gap: clamp(4px, 1.2vw, 9px);
+        transition: opacity 0.38s var(--ease), transform 0.38s var(--ease);
+        transform-origin: center;
+      }
+      #mantra-words.fading {
+        opacity: 0;
+        transform: scale(0.94) translateY(5px);
+      }
+
+      .mrow {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: clamp(1px, 0.4vw, 4px);
+        flex-wrap: nowrap;
+      }
+
+      .mw {
+        position: relative;
         display: inline-flex;
         align-items: center;
-        font-family: var(--f-sacred);
-        font-size: clamp(0.62rem, 1.6vw, 0.94rem);
-        font-weight: 600;
-        color: var(--ink-mid);
-        letter-spacing: 0.13em;
-        line-height: 1;
-        padding: 0 clamp(20px, 5vw, 48px); /* gap between end of copy A and start of copy B */
-        flex-shrink: 0;
-      }
-      .mhi {
-        color: var(--saffron);
+        justify-content: center;
+        padding: clamp(3px, 0.7vw, 5px) clamp(4px, 1vw, 8px);
+        border-radius: 8px;
         font-weight: 700;
-      }
-      .msep {
-        display: inline-block;
-        margin: 0 clamp(6px, 1.4vw, 11px);
-        color: var(--ink-ghost);
-        font-size: 0.8em;
+        letter-spacing: 0.05em;
+        font-size: clamp(0.46rem, 1.1vw, 0.74rem);
+        color: rgba(90, 50, 18, 0.35);
+        background: transparent;
+        border: 1px solid transparent;
+        transition: color 0.2s ease, background 0.2s ease,
+          border-color 0.2s ease, text-shadow 0.2s ease, box-shadow 0.2s ease;
+        cursor: default;
+        min-width: clamp(22px, 5vw, 40px);
+        text-align: center;
+        white-space: nowrap;
+        will-change: transform;
       }
 
-      @media (max-width: 380px) {
-        .m-copy {
-          font-size: 0.58rem;
-          letter-spacing: 0.09em;
+      /* Lingering after-glow */
+      .mw.wt-0.recent {
+        color: rgba(224, 120, 32, 0.42);
+      }
+      .mw.wt-1.recent {
+        color: rgba(107, 93, 211, 0.42);
+      }
+      .mw.wt-2.recent {
+        color: rgba(61, 122, 82, 0.42);
+      }
+
+      /* Active — Hare: saffron */
+      .mw.wt-0.active {
+        color: var(--saffron);
+        background: rgba(224, 120, 32, 0.13);
+        border-color: rgba(224, 120, 32, 0.32);
+        text-shadow: 0 0 12px rgba(224, 120, 32, 0.9),
+          0 0 28px rgba(224, 120, 32, 0.5), 0 0 52px rgba(224, 120, 32, 0.2);
+        box-shadow: 0 0 0 2px rgba(224, 120, 32, 0.1),
+          0 4px 18px rgba(224, 120, 32, 0.22),
+          inset 0 1px 0 rgba(255, 220, 100, 0.25);
+        animation: wBounce 0.36s var(--ease-bounce) forwards;
+      }
+      /* Active — Krishna: deep indigo/violet */
+      .mw.wt-1.active {
+        color: var(--krishna);
+        background: rgba(107, 93, 211, 0.11);
+        border-color: rgba(107, 93, 211, 0.28);
+        text-shadow: 0 0 12px rgba(107, 93, 211, 0.9),
+          0 0 28px rgba(107, 93, 211, 0.5), 0 0 52px rgba(107, 93, 211, 0.2);
+        box-shadow: 0 0 0 2px rgba(107, 93, 211, 0.1),
+          0 4px 18px rgba(107, 93, 211, 0.22),
+          inset 0 1px 0 rgba(180, 160, 255, 0.2);
+        animation: wBounce 0.36s var(--ease-bounce) forwards;
+      }
+      /* Active — Rama: tulsi/emerald */
+      .mw.wt-2.active {
+        color: var(--tulsi);
+        background: rgba(61, 122, 82, 0.11);
+        border-color: rgba(61, 122, 82, 0.28);
+        text-shadow: 0 0 12px rgba(61, 122, 82, 0.9),
+          0 0 28px rgba(61, 122, 82, 0.5), 0 0 52px rgba(61, 122, 82, 0.2);
+        box-shadow: 0 0 0 2px rgba(61, 122, 82, 0.1),
+          0 4px 18px rgba(61, 122, 82, 0.22),
+          inset 0 1px 0 rgba(120, 220, 150, 0.2);
+        animation: wBounce 0.36s var(--ease-bounce) forwards;
+      }
+
+      @keyframes wBounce {
+        0% {
+          transform: translateY(0) scale(1);
         }
-        #mantra-track {
-          animation-duration: 14s;
+        20% {
+          transform: translateY(-11px) scale(1.28);
+        }
+        50% {
+          transform: translateY(-5px) scale(1.16);
+        }
+        78% {
+          transform: translateY(-1.5px) scale(1.07);
+        }
+        100% {
+          transform: translateY(0) scale(1.04);
+        }
+      }
+
+      /* Separator between groups of 4 */
+      .m-sep {
+        font-size: 0.48rem;
+        color: var(--ink-ghost);
+        opacity: 0.42;
+        flex-shrink: 0;
+        padding: 0 clamp(1px, 0.3vw, 3px);
+        user-select: none;
+      }
+
+      /* ── Progress track ─────────────────────────────────── */
+      #m-progress {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 3px;
+        margin-top: clamp(6px, 1.5vw, 10px);
+      }
+      .mpip {
+        height: 3px;
+        flex: 1;
+        max-width: 24px;
+        border-radius: 2px;
+        background: rgba(180, 100, 20, 0.1);
+        transition: background 0.22s, transform 0.22s, box-shadow 0.22s;
+      }
+      .mpip.on {
+        transform: scaleY(1.9);
+      }
+      .mpip.wt0on {
+        background: var(--saffron);
+        box-shadow: 0 0 6px rgba(224, 120, 32, 0.55);
+      }
+      .mpip.wt1on {
+        background: var(--krishna);
+        box-shadow: 0 0 6px rgba(107, 93, 211, 0.55);
+      }
+      .mpip.wt2on {
+        background: var(--tulsi);
+        box-shadow: 0 0 6px rgba(61, 122, 82, 0.55);
+      }
+
+      /* ── Language-switch golden shimmer ─────────────────── */
+      #lang-shimmer {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          105deg,
+          transparent 0%,
+          rgba(255, 215, 80, 0.38) 45%,
+          rgba(255, 235, 120, 0.22) 55%,
+          transparent 100%
+        );
+        transform: translateX(-115%);
+        pointer-events: none;
+        border-radius: 20px;
+        will-change: transform, opacity;
+      }
+      #lang-shimmer.play {
+        animation: shimmerRun 0.72s ease-out forwards;
+      }
+      @keyframes shimmerRun {
+        0% {
+          transform: translateX(-115%);
+          opacity: 1;
+        }
+        100% {
+          transform: translateX(115%);
+          opacity: 0;
         }
       }
 
       /* ══════════════════════════════════════════════════════════════
-   BOTTOM CONTROLS — single clean pill, NO hide-button
-══════════════════════════════════════════════════════════════ */
+         BOTTOM CONTROLS
+      ══════════════════════════════════════════════════════════════ */
       #ctrls {
         grid-area: ctrls;
         display: flex;
@@ -576,7 +771,6 @@
         }
       }
 
-      /* Glass pill */
       .pill {
         display: flex;
         align-items: center;
@@ -590,8 +784,6 @@
         box-shadow: inset 0 1px 0 var(--glass-shine),
           0 6px 30px rgba(120, 60, 0, 0.14), 0 2px 6px rgba(120, 60, 0, 0.08);
       }
-
-      /* Text buttons inside pill */
       .cb {
         display: flex;
         align-items: center;
@@ -623,7 +815,6 @@
         transform: none !important;
       }
 
-      /* Play/Pause — hero circle */
       #btn-play {
         width: clamp(54px, 13.5vw, 70px);
         height: clamp(54px, 13.5vw, 70px);
@@ -656,7 +847,6 @@
         box-shadow: none;
       }
 
-      /* Next — tulsi accent */
       .cb.next {
         color: var(--tulsi);
       }
@@ -666,7 +856,6 @@
         border-color: rgba(61, 122, 82, 0.26);
       }
 
-      /* Standalone settings pill button */
       .pill-solo {
         display: flex;
         align-items: center;
@@ -697,8 +886,8 @@
       }
 
       /* ══════════════════════════════════════════════════════════════
-   SETTINGS PANEL — bottom sheet
-══════════════════════════════════════════════════════════════ */
+         SETTINGS PANEL
+      ══════════════════════════════════════════════════════════════ */
       #s-overlay {
         position: fixed;
         inset: 0;
@@ -714,7 +903,6 @@
         opacity: 1;
         pointer-events: auto;
       }
-
       #s-panel {
         position: absolute;
         bottom: 0;
@@ -737,7 +925,6 @@
       #s-overlay.open #s-panel {
         transform: translateY(0);
       }
-
       #s-handle {
         display: flex;
         justify-content: center;
@@ -749,7 +936,6 @@
         border-radius: 2px;
         background: rgba(120, 60, 0, 0.18);
       }
-
       #s-hdr {
         display: flex;
         align-items: center;
@@ -782,7 +968,6 @@
       #btn-sc:hover {
         background: rgba(180, 100, 20, 0.2);
       }
-
       .s-sec {
         margin-bottom: clamp(16px, 4vw, 24px);
       }
@@ -794,8 +979,6 @@
         color: var(--saffron);
         margin-bottom: clamp(10px, 2.5vw, 14px);
       }
-
-      /* Chips */
       .chips {
         display: flex;
         flex-wrap: wrap;
@@ -828,8 +1011,6 @@
         color: var(--saffron);
         box-shadow: 0 0 10px rgba(224, 120, 32, 0.18);
       }
-
-      /* Custom time row */
       .cust-row {
         display: flex;
         align-items: center;
@@ -893,8 +1074,6 @@
       .apply-btn:active {
         transform: scale(0.93);
       }
-
-      /* Toggles */
       .trow {
         display: flex;
         align-items: center;
@@ -960,8 +1139,8 @@
       }
 
       /* ══════════════════════════════════════════════════════════════
-   PARTICLES
-══════════════════════════════════════════════════════════════ */
+         PARTICLES
+      ══════════════════════════════════════════════════════════════ */
       .ptc {
         position: fixed;
         border-radius: 50%;
@@ -1011,9 +1190,8 @@
       }
 
       /* ══════════════════════════════════════════════════════════════
-   RESPONSIVE
-══════════════════════════════════════════════════════════════ */
-      /* Landscape small phones */
+         RESPONSIVE
+      ══════════════════════════════════════════════════════════════ */
       @media (orientation: landscape) and (max-height: 480px) {
         :root {
           --ring: clamp(60px, 19vh, 80px);
@@ -1031,7 +1209,6 @@
           display: none;
         }
       }
-      /* Very small phones */
       @media (max-width: 374px) {
         :root {
           --ring: 70px;
@@ -1048,18 +1225,33 @@
           height: 50px;
           font-size: 1rem;
         }
-        #mantra-text {
-          font-size: 0.5rem;
-          letter-spacing: 0.08em;
+        .mw {
+          font-size: 0.42rem;
+          padding: 2px 3px;
+          min-width: 18px;
+        }
+        #mantra-pill {
+          padding: 8px 10px 6px;
+          border-radius: 14px;
+        }
+        .m-sep {
+          display: none;
         }
       }
-      /* Tablet */
+      @media (max-width: 480px) {
+        .mw {
+          font-size: clamp(0.44rem, 1vw, 0.6rem);
+        }
+        #m-om {
+          font-size: 0.95rem;
+        }
+      }
       @media (min-width: 768px) {
         :root {
           --ring: clamp(92px, 12vmin, 114px);
         }
-        #mantra-text {
-          font-size: clamp(0.7rem, 1.7vw, 1rem);
+        .mw {
+          font-size: clamp(0.6rem, 1.4vw, 0.9rem);
         }
         #b-name {
           font-size: 0.88rem;
@@ -1069,25 +1261,23 @@
           font-size: 0.82rem;
         }
       }
-      /* Desktop */
       @media (min-width: 1024px) {
         :root {
           --ring: clamp(98px, 10vmin, 120px);
         }
-        #mantra-text {
-          font-size: clamp(0.78rem, 1.4vw, 1.05rem);
+        .mw {
+          font-size: clamp(0.68rem, 1.3vw, 0.92rem);
         }
       }
-      /* Large desktop */
       @media (min-width: 1440px) {
         :root {
           --ring: 122px;
         }
-        #mantra-text {
-          font-size: 1.1rem;
+        .mw {
+          font-size: 0.96rem;
         }
         #mantra-pill {
-          padding: 13px 62px;
+          padding: 16px 28px 12px;
         }
       }
     </style>
@@ -1108,17 +1298,13 @@
     <div id="app">
       <!-- ── TOP BAR ─────────────────────────────────────────── -->
       <div id="topbar">
-        <!-- Brand left -->
         <div id="brand">
           <div id="badge" aria-hidden="true">IN</div>
           <div id="b-copy">
-            <!-- ★ CHANGE org name / subtitle here ★ -->
             <span id="b-name">ISKCON NRJD</span>
             <span id="b-sub">Japa Session Tool</span>
           </div>
         </div>
-
-        <!-- Right cluster: icon btns + compact ring timer -->
         <div id="right-cluster">
           <button
             class="ic-btn"
@@ -1136,7 +1322,6 @@
           >
             ⚙
           </button>
-
           <div
             id="ring-wrap"
             role="timer"
@@ -1144,7 +1329,6 @@
             aria-label="Japa timer"
           >
             <svg id="ring-svg" viewBox="0 0 80 80" aria-hidden="true">
-              <!-- background circle fill -->
               <circle
                 cx="40"
                 cy="40"
@@ -1153,7 +1337,6 @@
                 stroke="var(--glass-border)"
                 stroke-width="1"
               />
-              <!-- track -->
               <circle
                 id="rtrack"
                 cx="40"
@@ -1163,7 +1346,6 @@
                 stroke="rgba(180,100,20,0.13)"
                 stroke-width="5"
               />
-              <!-- progress -->
               <circle
                 id="rfill"
                 cx="40"
@@ -1185,56 +1367,32 @@
         </div>
       </div>
 
-      <!-- ── MANTRA PILL ──────────────────────────────────────── -->
+      <!-- ── MANTRA PILL — multilingual word bounce ─────────── -->
       <div id="mantra-row">
-        <div id="mantra-pill">
-          <!--
-        Marquee trick: two identical copies side by side.
-        Animation slides left by 50% (= 1 copy width) then snaps back — seamless.
-      -->
-          <div
-            id="mantra-track"
-            aria-label="Hare Krishna Maha Mantra"
-            role="marquee"
-          >
-            <!-- Copy A -->
-            <span class="m-copy">
-              <span class="mhi">HARE</span>&nbsp;KRISHNA
-              <span class="msep">✦</span>
-              <span class="mhi">HARE</span>&nbsp;KRISHNA
-              <span class="msep">✦</span>
-              KRISHNA&nbsp;KRISHNA
-              <span class="msep">✦</span>
-              <span class="mhi">HARE</span>&nbsp;<span class="mhi">HARE</span>
-              <span class="msep">✦</span>
-              <span class="mhi">HARE</span>&nbsp;RAMA
-              <span class="msep">✦</span>
-              <span class="mhi">HARE</span>&nbsp;RAMA
-              <span class="msep">✦</span>
-              RAMA&nbsp;RAMA
-              <span class="msep">✦</span>
-              <span class="mhi">HARE</span>&nbsp;<span class="mhi">HARE</span>
-            </span>
-
-            <!-- Copy B — identical, creates seamless loop -->
-            <span class="m-copy" aria-hidden="true">
-              <span class="mhi">HARE</span>&nbsp;KRISHNA
-              <span class="msep">✦</span>
-              <span class="mhi">HARE</span>&nbsp;KRISHNA
-              <span class="msep">✦</span>
-              KRISHNA&nbsp;KRISHNA
-              <span class="msep">✦</span>
-              <span class="mhi">HARE</span>&nbsp;<span class="mhi">HARE</span>
-              <span class="msep">✦</span>
-              <span class="mhi">HARE</span>&nbsp;RAMA
-              <span class="msep">✦</span>
-              <span class="mhi">HARE</span>&nbsp;RAMA
-              <span class="msep">✦</span>
-              RAMA&nbsp;RAMA
-              <span class="msep">✦</span>
-              <span class="mhi">HARE</span>&nbsp;<span class="mhi">HARE</span>
-            </span>
+        <div
+          id="mantra-pill"
+          aria-label="Hare Krishna Maha Mantra"
+          role="region"
+        >
+          <!-- Header: OM · language label · lang pips -->
+          <div id="m-header">
+            <span id="m-om" aria-hidden="true"></span>
+            <span id="lang-name">English</span>
+            <div id="lang-pips" aria-hidden="true">
+              <span class="lpip on"></span>
+              <span class="lpip"></span>
+              <span class="lpip"></span>
+            </div>
           </div>
+
+          <!-- Words — built by JS -->
+          <div id="mantra-words" aria-live="polite"></div>
+
+          <!-- Progress bar — built by JS -->
+          <div id="m-progress" aria-hidden="true"></div>
+
+          <!-- Shimmer overlay for language switch -->
+          <div id="lang-shimmer" aria-hidden="true"></div>
         </div>
       </div>
 
@@ -1242,7 +1400,6 @@
 
       <!-- ── BOTTOM CONTROLS ─────────────────────────────────── -->
       <div id="ctrls">
-        <!-- Main control pill -->
         <div class="pill">
           <button class="cb" id="btn-reset" aria-label="Reset (R)">
             ↺ Reset
@@ -1256,7 +1413,6 @@
             🔔 Next
           </button>
         </div>
-        <!-- Standalone settings pill -->
         <button class="pill-solo" id="btn-settings" aria-label="Settings (S)">
           ⚙ Settings
         </button>
@@ -1268,7 +1424,6 @@
     <div id="s-overlay" role="dialog" aria-modal="true" aria-label="Settings">
       <div id="s-panel">
         <div id="s-handle"><span></span></div>
-
         <div id="s-hdr">
           <span id="s-title">⚙ Session Settings</span>
           <button id="btn-sc" aria-label="Close settings">✕</button>
@@ -1374,7 +1529,7 @@
         { l: "20 s", ms: 20000 },
         { l: "30 s", ms: 30000 },
       ];
-      const RC = 213.63; // 2π × 34
+      const RC = 213.63;
 
       /* ── Config ─────────────────────────────────────────── */
       const DEF = {
@@ -1457,10 +1612,13 @@
         strike(n + 3.0);
       }
 
-      /* ── Slideshow ──────────────────────────────────────── */
+      /* ── Slideshow — Ken Burns ──────────────────────────── */
       let imgs = [],
         iIdx = 0,
-        sJob = null;
+        sJob = null,
+        kbIdx = 0;
+      const KB_CLS = ["kb1", "kb2", "kb3", "kb4"];
+
       async function loadImgs() {
         for (const u of ["/api/images", "image-list.json"]) {
           try {
@@ -1488,6 +1646,7 @@
           B = mk("slide-b", false);
         ss.append(A, B);
         A.style.backgroundImage = iu(imgs[0]);
+        A.classList.add("kb1");
         imgs.forEach((n) => {
           const i = new Image();
           i.src = `/NRJD_Pics/${encodeURIComponent(n)}`;
@@ -1495,6 +1654,7 @@
         sched();
       }
       const iu = (n) => `url("/NRJD_Pics/${encodeURIComponent(n)}")`;
+
       function nxtImg() {
         if (imgs.length <= 1) return;
         iIdx = (iIdx + 1) % imgs.length;
@@ -1503,8 +1663,12 @@
         if (!A || !B) return;
         const [nx, pv] = A.classList.contains("active") ? [B, A] : [A, B];
         nx.style.backgroundImage = iu(imgs[iIdx]);
+        // Reset Ken Burns by removing animation class, then re-adding after reflow
+        KB_CLS.forEach((c) => nx.classList.remove(c));
         pv.classList.remove("active");
-        nx.classList.add("active");
+        void nx.offsetWidth; // force reflow → restarts animation cleanly
+        nx.classList.add("active", KB_CLS[kbIdx % 4]);
+        kbIdx++;
       }
       function sched() {
         clearInterval(sJob);
@@ -1520,12 +1684,8 @@
         elPlay.textContent = running ? "⏸" : "▶";
         elPlay.disabled = left === 0 && !running;
         elReset.disabled = left === total && !running;
-
-        // Ring fill (drains from full → empty)
         const pct = total > 0 ? left / total : 0;
         elFill.style.strokeDashoffset = String(RC * (1 - pct));
-
-        // State classes
         elDisp.classList.remove("warn", "danger");
         elFill.classList.remove("warn", "danger");
         if (left === 0) {
@@ -1654,20 +1814,228 @@
           .forEach((c) => c.classList.toggle("on", +c.dataset.v === val));
       }
 
+      /* ══════════════════════════════════════════════════════════════
+         MANTRA — multilingual word-bounce engine
+      ══════════════════════════════════════════════════════════════ */
+      const MANTRAS_DATA = [
+        {
+          lang: "English",
+          script: "latin",
+          words: [
+            "Hare",
+            "Krishna",
+            "Hare",
+            "Krishna",
+            "Krishna",
+            "Krishna",
+            "Hare",
+            "Hare",
+            "Hare",
+            "Rama",
+            "Hare",
+            "Rama",
+            "Rama",
+            "Rama",
+            "Hare",
+            "Hare",
+          ],
+        },
+        {
+          lang: "हिन्दी",
+          script: "devanagari",
+          words: [
+            "हरे",
+            "कृष्ण",
+            "हरे",
+            "कृष्ण",
+            "कृष्ण",
+            "कृष्ण",
+            "हरे",
+            "हरे",
+            "हरे",
+            "राम",
+            "हरे",
+            "राम",
+            "राम",
+            "राम",
+            "हरे",
+            "हरे",
+          ],
+        },
+        {
+          lang: "ಕನ್ನಡ",
+          script: "kannada",
+          words: [
+            "ಹರೇ",
+            "ಕೃಷ್ಣ",
+            "ಹರೇ",
+            "ಕೃಷ್ಣ",
+            "ಕೃಷ್ಣ",
+            "ಕೃಷ್ಣ",
+            "ಹರೇ",
+            "ಹರೇ",
+            "ಹರೇ",
+            "ರಾಮ",
+            "ಹರೇ",
+            "ರಾಮ",
+            "ರಾಮ",
+            "ರಾಮ",
+            "ಹರೇ",
+            "ಹರೇ",
+          ],
+        },
+      ];
+      // Word type per position: 0=Hare (saffron), 1=Krishna (violet), 2=Rama (tulsi)
+      const WT = [0, 1, 0, 1, 1, 1, 0, 0, 0, 2, 0, 2, 2, 2, 0, 0];
+      const SCRIPT_FONT = {
+        latin: "var(--f-sacred)",
+        devanagari: "var(--f-deva)",
+        kannada: "var(--f-knd)",
+      };
+
+      let mLang = 0,
+        mWord = 0,
+        mCycle = 0,
+        mPrev = -1;
+      const CYCLES_PER_LANG = 2; // full cycles before language switches
+      const WORD_MS = 360; // ms per word highlight
+
+      function buildMantraWords() {
+        const data = MANTRAS_DATA[mLang];
+        const font = SCRIPT_FONT[data.script];
+        const mwEl = $("mantra-words");
+        const mpEl = $("m-progress");
+        mwEl.innerHTML = "";
+        mpEl.innerHTML = "";
+        mPrev = -1;
+
+        // Two rows of 8 words each
+        for (let row = 0; row < 2; row++) {
+          const rowDiv = document.createElement("div");
+          rowDiv.className = "mrow";
+          for (let i = 0; i < 8; i++) {
+            const wi = row * 8 + i;
+            // Mid-row separator after word index 3 (between groups of 4)
+            if (i === 4) {
+              const sep = document.createElement("span");
+              sep.className = "m-sep";
+              sep.textContent = "✦";
+              rowDiv.appendChild(sep);
+            }
+            const sp = document.createElement("span");
+            sp.className = `mw wt-${WT[wi]}`;
+            sp.id = `mw-${wi}`;
+            sp.style.fontFamily = font;
+            sp.textContent = data.words[wi];
+            rowDiv.appendChild(sp);
+          }
+          mwEl.appendChild(rowDiv);
+        }
+
+        // 16 progress pips
+        for (let i = 0; i < 16; i++) {
+          const pip = document.createElement("span");
+          pip.className = "mpip";
+          pip.id = `mpip-${i}`;
+          mpEl.appendChild(pip);
+        }
+
+        // Update language label
+        const langEl = $("lang-name");
+        if (langEl) {
+          langEl.textContent = data.lang;
+          langEl.style.fontFamily = font;
+          // Adjust letter-spacing for non-Latin scripts
+          langEl.style.letterSpacing =
+            data.script === "latin" ? "0.22em" : "0.04em";
+          langEl.style.textTransform =
+            data.script === "latin" ? "uppercase" : "none";
+        }
+        // Sync language pips
+        document
+          .querySelectorAll(".lpip")
+          .forEach((p, i) => p.classList.toggle("on", i === mLang));
+      }
+
+      function tickMantra() {
+        // Deactivate previous word
+        if (mPrev >= 0) {
+          const p = $(`mw-${mPrev}`);
+          const pp = $(`mpip-${mPrev}`);
+          if (p) {
+            p.classList.remove("active");
+            p.classList.add("recent");
+            setTimeout(() => p && p.classList.remove("recent"), 750);
+          }
+          if (pp) pp.classList.remove("on", "wt0on", "wt1on", "wt2on");
+        }
+
+        // Activate current word
+        const curr = $(`mw-${mWord}`);
+        const cpip = $(`mpip-${mWord}`);
+        if (curr) curr.classList.add("active");
+        if (cpip) {
+          cpip.classList.add("on", `wt${WT[mWord]}on`);
+        }
+
+        mPrev = mWord;
+        mWord = (mWord + 1) % 16;
+
+        // Check if a full cycle completed
+        if (mWord === 0) {
+          mCycle++;
+          if (mCycle >= CYCLES_PER_LANG) {
+            mCycle = 0;
+            switchMantraLang();
+          }
+        }
+      }
+
+      function switchMantraLang() {
+        const mwEl = $("mantra-words");
+        const langEl = $("lang-name");
+        const shim = $("lang-shimmer");
+        if (!mwEl) return;
+
+        // Fade out current
+        mwEl.classList.add("fading");
+        if (langEl) langEl.classList.add("fading");
+
+        setTimeout(() => {
+          // Switch to next language
+          mLang = (mLang + 1) % MANTRAS_DATA.length;
+          mWord = 0;
+          mPrev = -1;
+          buildMantraWords();
+
+          // Fade back in
+          mwEl.classList.remove("fading");
+          if (langEl) langEl.classList.remove("fading");
+
+          // Golden shimmer sweep
+          if (shim) {
+            shim.classList.remove("play");
+            void shim.offsetWidth;
+            shim.classList.add("play");
+            setTimeout(() => shim.classList.remove("play"), 800);
+          }
+        }, 400);
+      }
+
       /* ── Particles ──────────────────────────────────────── */
       function particles() {
-        for (let i = 0; i < 12; i++) {
+        for (let i = 0; i < 14; i++) {
           const p = document.createElement("div");
           p.className = "ptc";
           const sz = (Math.random() * 4 + 1.5).toFixed(1);
           p.style.cssText = `width:${sz}px;height:${sz}px;left:${(
             Math.random() * 100
-          ).toFixed(1)}vw;bottom:${(Math.random() * 20).toFixed(1)}vh;--d:${(
+          ).toFixed(1)}vw;bottom:${(Math.random() * 22).toFixed(1)}vh;--d:${(
             Math.random() * 14 +
             9
           ).toFixed(1)}s;--dl:${(Math.random() * 8).toFixed(1)}s;--dx:${(
             (Math.random() - 0.5) *
-            100
+            110
           ).toFixed(0)}px;`;
           document.body.appendChild(p);
         }
@@ -1782,6 +2150,8 @@
       watermark();
       particles();
       ui();
+      buildMantraWords(); // build mantra display
+      setInterval(tickMantra, WORD_MS); // start word bounce
       loadImgs();
       loadBell();
       if ("serviceWorker" in navigator)
