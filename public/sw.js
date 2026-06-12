@@ -12,7 +12,7 @@
  */
 
 /* ── Version — bump this to force cache refresh on all clients ── */
-const CACHE_VER   = 'japa-v4';
+const CACHE_VER   = 'japa-v5';
 const FONT_CACHE  = 'japa-fonts-v1';
 const IMG_CACHE   = 'japa-images-v1';
 
@@ -20,6 +20,7 @@ const IMG_CACHE   = 'japa-images-v1';
 const PRECACHE = [
   '/',
   '/index.html',
+  '/stopwatch.html',
   '/manifest.json',
   '/Temple_Bell_Sound.mp3',
   '/image-list.json',          // may 404 on fresh installs — handled gracefully

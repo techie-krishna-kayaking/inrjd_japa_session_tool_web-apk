@@ -8,82 +8,91 @@
 </p>
 
 <p align="center">
-  <em>A distraction-free chanting session tool designed for screen-sharing over Google Meet</em>
+  <em>A distraction-free chanting session tool designed for screen-sharing over Google Meet & individual Japa tracking</em>
 </p>
 
 ---
 
 ## ✨ Features
 
-- 🖼️ **Slideshow** — Auto-rotating images from `NRJD_Pics/` folder (10s per slide, smooth crossfade)
-- 📿 **Mantra Overlay** — Hare Krishna Maha-mantra displayed on every slide
-- ⏱️ **3-Minute Timer** — Countdown with auto-reset & restart
-- 🔔 **Temple Bell** — Real temple bell sound (plays 3 times on timer completion)
-- 🎛️ **Manual Controls** — Start, Pause, Reset, Next (bell + reset), Fullscreen
-- 👁️ **Hideable UI** — Controls can be hidden for clean screen sharing
+### 🎯 Group Session Mode (Main Page)
+- 🖼️ **Slideshow** — Auto-rotating Jagannath images with Ken Burns effect (configurable interval)
+- 📿 **Animated Mantra** — Word-by-word bounce highlighting in English, Hindi & Kannada
+- ⏱️ **Configurable Timer** — 1 min to 30 min presets + custom duration
+- 🔔 **Temple Bell** — Real temple bell sound (plays 3× on timer completion)
+- 🔁 **Auto-restart** — Timer automatically resets and starts after bell
+- 🎛️ **Controls** — Start, Pause, Reset, Next (bell + reset), Fullscreen, Settings
+- ⚙️ **Settings Panel** — Timer duration, slide interval, bell on/off, warning colours
 - 📱 **PWA** — Works offline after first load
 - ⌨️ **Keyboard Shortcuts** — Full control without touching the mouse
+
+### ⏱️ Japa Stopwatch Mode (NEW)
+- 📿 **Lap-based Stopwatch** — Track time per round of chanting
+- 🏷️ **Japa 1, Japa 2, Japa 3...** — Each lap labelled as a Japa round
+- 🖼️ **Photo Slideshow** — Jagannath photos displayed in a contained box above the timer
+- 🕉️ **Mantra Display** — Hare Krishna Maha-mantra always visible
+- 🏆 **Fastest / Slowest** — Highlights your best and slowest rounds
+- ⏸️ **Pause & Resume** — Pause anytime, resume without losing data
+- 📊 **Total & Per-lap times** — See individual round time + cumulative total
+- ⌨️ **Shortcuts** — Space (start/pause), L (lap), R (reset), F (fullscreen)
 
 ## 🚀 Quick Start (Web)
 
 ```bash
-# No dependencies needed — uses only Node.js built-in modules
+npm install   # one-time setup
 node server.js
 ```
 
 Open **http://localhost:3000** in Chrome 🌐
 
+| Page | URL |
+|------|-----|
+| Group Session | `http://localhost:3000` |
+| Japa Stopwatch | `http://localhost:3000/stopwatch.html` |
+
 ## 🖼️ Adding Images
 
-Place `.jpg`, `.jpeg`, or `.png` files in the `NRJD_Pics/` folder. They will be auto-detected.
+Place `.jpg`, `.jpeg`, or `.png` files in the `public/NRJD_Pics/` folder. They will be auto-detected on server start.
 
 ## 📱 Android APK Build
 
-### Prerequisites
-- Node.js 18+
-- Android Studio with SDK installed
-- Java 17+
+### Automatic (GitHub Actions)
+Push to `main` branch → APK is built automatically and uploaded as an artifact.
 
-### Steps
-
+### Manual
 ```bash
-# 1. Install Capacitor
-npm install @capacitor/core @capacitor/cli
-
-# 2. Initialize Capacitor (already configured)
-npx cap init "Japa Session Tool" com.nrjd.japasession --web-dir .
-
-# 3. Add Android platform
-npm install @capacitor/android
-npx cap add android
-
-# 4. Copy web assets to Android project
-npx cap copy android
-
-# 5. Open in Android Studio
-npx cap open android
-
-# 6. Build APK from Android Studio: Build > Build Bundle(s) / APK(s) > Build APK(s)
+npm install
+node gen.js                    # generate image-list.json
+npx cap sync android           # sync web assets to Android
+cd android && ./gradlew assembleDebug
 ```
 
-For the Android build, images should be bundled in the `NRJD_Pics/` folder before running `cap copy`.
+APK output: `android/app/build/outputs/apk/debug/app-debug.apk`
 
 ## ⌨️ Keyboard Shortcuts
 
+### Group Session
 | Key | Action |
 |-----|--------|
 | `Space` / `Enter` | ▶️ Start / ⏸ Pause timer |
-| `R` | 🔄 Reset timer to 3:00 |
+| `R` | 🔄 Reset timer |
 | `N` | ⏭️ Next (play bell + reset) |
+| `S` | ⚙️ Open settings |
 | `F` | 🖥️ Toggle fullscreen |
-| `H` | 👁️ Hide/show controls |
+
+### Japa Stopwatch
+| Key | Action |
+|-----|--------|
+| `Space` / `Enter` | ▶️ Start / ⏸ Pause |
+| `L` | 📿 Record Lap (Japa round) |
+| `R` | 🔄 Reset (when paused) |
+| `F` | 🖥️ Toggle fullscreen |
 
 ## 💡 Screen Sharing Tips
 
 1. 🌐 Open in Chrome, press `F` for fullscreen
 2. 📺 In Google Meet, share the Chrome **tab** (not window) for best quality
-3. 👁️ Press `H` to hide controls during sharing
-4. ⌨️ Use keyboard shortcuts to control without showing UI
+3. ⌨️ Use keyboard shortcuts to control without showing UI
 
 ---
 
